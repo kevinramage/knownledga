@@ -1,0 +1,1 @@
+export const SELECTDOCUMENT_EVENT = "SelectDocumentEvent";
