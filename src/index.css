@@ -99,4 +99,6 @@ button:focus-visible {
 
 textarea {
   width: 100%;
+  background-color: var(--color-button-background);
+  color: white;
 }
