@@ -5,6 +5,9 @@
       "moduleResolution": "Node",
       "allowSyntheticDefaultImports": true,
       "outDir": "dist"
-    },
-    "include": ["server"]
+    }, "include": [
+      "server/**/*"
+    ], "files": [
+      "server/**/*"
+    ]
   }
