@@ -1,51 +1,18 @@
+import { IDocument } from "../../../common/document";
 import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic } from "./lexer"
-const text = `
-# Title 1
-## Title 2
-### Title 3
-#### Title 4
-##### Title 5
-###### Title 6
-
-* Unordered elt 1
-* Unordered elt 2
-
-1. Unordered elt 1
-2. Unordered elt 2
-
-~~~
-{
-  "firstName": "John",
-  "lastName": "Smith",
-  "age": 25
-}
-~~~
-| Syntax | Description |
-| --- | ----------- |
-| Header | Title |
-| Paragraph | Text |
-
-- [x] Write the press release
-- [ ] Update the website
-- [ ] Contact the media
-
-> Dorothy followed her through many of the beautiful rooms in her castle.
-
-My favorite search engine is [Duck Duck Go](https://duckduckgo.com).
-I just love **bold text**.
-
-This text is ***really important***.
-`
 
 /*
 
 Don't put tabs or spaces in front of your paragraphs.
 */
 
-export function MarkdownRendererView() {
+export interface IMarkdownRendererViewProps {
+    document: IDocument
+}
 
-    const tokens = new MarkdownLexer().parse(text);
-    console.info(tokens);
+export function MarkdownRendererView(props: IMarkdownRendererViewProps) {
+    const { document } = props;
+    const tokens = new MarkdownLexer().parse(document.content);
 
     return (
         <div className="md_document">

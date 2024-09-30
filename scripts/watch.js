@@ -9,7 +9,7 @@ import chokidar from 'chokidar'
 
 async function build() {
   try {
-    await execa('node', ['scripts/build.js'], { all: true }).stderr.pipe(process.stdout);
+    await execa('node', ['scripts/run.js'], { all: true }).stdout.pipe(process.stdout);
   } catch (e) {
     console.error(e);
   }

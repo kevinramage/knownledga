@@ -1,5 +1,6 @@
 import { execa } from 'execa';
-import fs from 'node:fs';
+import { exec } from 'node:child_process';
+import fs, { stat } from 'node:fs';
 import { oraPromise } from 'ora';
 
 /**
@@ -45,11 +46,21 @@ async function createServerPackage() {
   //return execa('node_modules/.bin/pkg', ['package.json', '--output', 'src-tauri/binaries/app']);
 }
 
+function killNode() {
+  exec("kill", "(Get-Process -Name node).Id")
+}
+
+function runNode() {
+  exec("node", "dist/server.cjs");
+}
+
 async function main() {
   try {
+    killNode();
     await createBundle();
     await createServerPackage();
     await moveBinaries();
+    runNode();
   } catch (e) {
     throw e;
   }

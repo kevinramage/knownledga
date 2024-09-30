@@ -68,8 +68,10 @@ button:focus-visible {
 }
 
 .md_document {
-  min-width: 500px;
+  width: 100%;
   text-align: left;
+  overflow-y: scroll;
+  height: 100%;
 }
 
 .md_checklist {
@@ -84,4 +86,17 @@ button:focus-visible {
 
 .md_tablecell {
   border: solid 1px lightgray;
+}
+
+
+.fileExplorerView {
+  width: 100%;
+}
+
+.fileExplorerView .MuiAppBar-root {
+  background-color: var(--color-button-background);
+}
+
+textarea {
+  width: 100%;
 }
