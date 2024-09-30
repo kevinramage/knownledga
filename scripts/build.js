@@ -56,11 +56,11 @@ function runNode() {
 
 async function main() {
   try {
-    killNode();
+    //killNode();
     await createBundle();
     await createServerPackage();
     await moveBinaries();
-    runNode();
+    //runNode();
   } catch (e) {
     throw e;
   }

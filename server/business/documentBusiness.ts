@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
-import { fastify } from "..";
-import { IDocument } from "../../common/document";
+import { fastify } from "../index.ts";
+import { IDocument } from "../../common/document.ts";
 import { basename } from "path";
 import { v4 } from "uuid";
 

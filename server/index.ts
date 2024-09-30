@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
-import { WorkspaceBusiness } from './business/workspaceBusiness';
-import { DocumentBusiness } from './business/documentBusiness';
+import { WorkspaceBusiness } from './business/workspaceBusiness.ts';
+import { DocumentBusiness } from './business/documentBusiness.ts';
 
 export const fastify = Fastify({
   logger: true
@@ -12,7 +12,7 @@ fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function
   try {
     var json = JSON.parse(body + "")
     done(null, json)
-  } catch (err) {
+  } catch (err: any) {
     err.statusCode = 400
     done(err, undefined)
   }
@@ -20,7 +20,7 @@ fastify.addContentTypeParser('application/json', { parseAs: 'string' }, function
 
 // Open a workspace from name
 fastify.get('/api/v1/workspace/:name', async function handler (request, reply) {
-  const name = request.params["name"];
+  const name = (request.params as any)["name"];
   const workspace = await WorkspaceBusiness.readWorkspace(name);
   return workspace;
 });

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
-import { DEFAULT_OPTIONS } from '../common/options'
-import { FileExporerView } from './component/fileExplorer/view'
-import { DEFAULT_WORKSPACE, IWorkspace } from '../common/workspace'
-import { MarkdownView } from './component/markdown/view'
-import { ServiceManager } from './business/serviceManager'
-import { EventManager } from './business/eventManager'
+import { DEFAULT_OPTIONS } from '../common/options.ts'
+import { FileExporerView } from './component/fileExplorer/view.tsx'
+import { DEFAULT_WORKSPACE, IWorkspace } from '../common/workspace.ts'
+import { MarkdownView } from './component/markdown/view.tsx'
+import { ServiceManager } from './business/serviceManager.ts'
+import { EventManager } from './business/eventManager.ts'
 
 const serviceManager = new ServiceManager();
 const eventManager = new EventManager(serviceManager);
@@ -46,7 +46,7 @@ function App() {
                 <MarkdownView document={workspace.selectedDocument} />
             )}
           </Panel>
-          { !options.panels.right && (
+          { !options.panels.right.disable && (
           <>
           <PanelResizeHandle className='panelResize' />
           <Panel className='panel' defaultSize={options.panels.right.size} maxSize={5}>Right</Panel>

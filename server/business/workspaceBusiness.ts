@@ -1,7 +1,7 @@
 import { mkdir, readdir, readFile, stat, writeFile } from "fs/promises";
-import { IWorkspace, MARKDOWN_EXAMPLE } from "../../common/workspace";
-import { fastify } from "..";
-import { IDocument } from "../../common/document";
+import { IWorkspace, MARKDOWN_EXAMPLE } from "../../common/workspace.ts";
+import { fastify } from "../index.ts";
+import { IDocument } from "../../common/document.ts";
 import { basename, join } from "path";
 import { homedir } from "os";
 import { v4 } from "uuid";
@@ -15,7 +15,7 @@ export class WorkspaceBusiness {
             fastify.log.info("WorkspaceBusiness.readWorkspaces - Call method");
             readdir(workspacesPath, {withFileTypes: true}).then((files) => {
                 const workspaces = files.filter(f => f.isDirectory()).map(f => {
-                    return { path: f.name, documents: [] } as IWorkspace
+                    return { id: v4(), path: f.name, documents: [] } as IWorkspace
                 });
                 resolve(workspaces);
             }).catch((err) => {

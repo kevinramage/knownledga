@@ -1,10 +1,9 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import FolderOpenIcon from '@mui/icons-material/FolderOpen';
 import { TreeItem } from "@mui/x-tree-view";
-import { IWorkspace } from "../../../common/workspace";
-import { IDocument } from "../../../common/document";
-import { SELECTDOCUMENT_EVENT } from "../../../common/event";
+import { IWorkspace } from "../../../common/workspace.ts";
+import { IDocument } from "../../../common/document.ts";
+import { SELECTDOCUMENT_EVENT } from "../../../common/event.ts";
 
 export interface IFileExplorerViewProps {
     workspace: IWorkspace
@@ -17,7 +16,7 @@ export function FileExporerView(props: IFileExplorerViewProps) {
             <AppBar position="relative">
                 <Toolbar>
                     <IconButton>
-                        <FolderOpenIcon fill="#F8D775" htmlColor="#F8D775" />
+                        {/*<FolderOpenIcon fill="#F8D775" htmlColor="#F8D775" />*/}
                     </IconButton>
                     <Typography>File explorer</Typography>
                 </Toolbar>

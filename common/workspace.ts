@@ -1,4 +1,4 @@
-import { IDocument } from "./document";
+import { IDocument } from "./document.ts";
 
 export interface IWorkspace {
     id: string;

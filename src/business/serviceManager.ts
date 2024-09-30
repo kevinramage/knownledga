@@ -1,5 +1,5 @@
-import { IDocument } from "../../common/document";
-import { IWorkspace } from "../../common/workspace";
+import { IDocument } from "../../common/document.ts";
+import { IWorkspace } from "../../common/workspace.ts";
 
 const DEFAULT_URL = "http://localhost:3000";
 

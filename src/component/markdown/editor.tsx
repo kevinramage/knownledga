@@ -1,4 +1,4 @@
-import { IDocument } from "../../../common/document";
+import { IDocument } from "../../../common/document.ts";
 
 export interface IMarkdownEditorProps {
     document: IDocument

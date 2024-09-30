@@ -1,7 +1,7 @@
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
-import { MarkdownRendererView } from "./renderer";
-import { IDocument } from "../../../common/document";
-import { MarkdownEditor } from "./editor";
+import { MarkdownRendererView } from "./renderer.tsx";
+import { IDocument } from "../../../common/document.ts";
+import { MarkdownEditor } from "./editor.tsx";
 
 export interface IMarkdownViewProps {
     document: IDocument
