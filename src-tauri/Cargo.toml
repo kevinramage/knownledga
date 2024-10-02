@@ -2,10 +2,10 @@
 name = "Knownledga"
 version = "0.0.1"
 description = ""
-authors = ["you"]
-license = ""
+authors = ["Kevin RAMAGE"]
+license = "MIT"
 repository = ""
-edition = "2021"
+edition = "2024"
 rust-version = "1.57"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

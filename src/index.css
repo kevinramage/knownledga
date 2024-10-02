@@ -102,3 +102,8 @@ textarea {
   background-color: var(--color-button-background);
   color: white;
 }
+
+.fileExplorerView .MuiToolbar-root {
+  border-bottom: solid 1px var(--color-button-background);
+  border-color: white
+}
