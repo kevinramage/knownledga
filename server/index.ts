@@ -32,11 +32,39 @@ fastify.get('/api/v1/workspace/', async function handler (_, reply) {
 });
 
 // Read document from path
-fastify.post('/api/v1/document/', async function handler(request, reply) {
+fastify.post('/api/v1/document/read', async function handler(request, reply) {
   const data = request.body as { path: string };
   const document = await DocumentBusiness.readDocument(data.path);
   return document;
-})
+});
+
+// Rename file
+fastify.post('/api/v1/document/rename', async function handler(request, reply) {
+  const data = request.body as { oldPath: string, newPath: string };
+  await DocumentBusiness.renameFile(data.oldPath, data.newPath);
+  return {};
+});
+
+// Add new file
+fastify.post('/api/v1/document/', async function handler(request, reply) {
+  const data = request.body as { path: string };
+  const document = await DocumentBusiness.addNewFile(data.path);
+  return document;
+});
+
+// Update file
+fastify.put('/api/v1/document/', async function handler(request, reply) {
+  const data = request.body as { id: string, path: string, content: string };
+  const document = await DocumentBusiness.updateFile(data.id, data.path, data.content);
+  return document;
+});
+
+// Delete file
+fastify.delete('/api/v1/document/', async function handler(request, reply) {
+  const data = request.body as { path: string };
+  await DocumentBusiness.deleteFile(data.path);
+  return {};
+});
 
 fastify.get('/api/v1/ping', async function handler (request, reply) {
   return { status: "OK" }

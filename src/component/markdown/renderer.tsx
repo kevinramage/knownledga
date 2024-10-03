@@ -7,12 +7,12 @@ Don't put tabs or spaces in front of your paragraphs.
 */
 
 export interface IMarkdownRendererViewProps {
-    document: IDocument
+    content: string
 }
 
 export function MarkdownRendererView(props: IMarkdownRendererViewProps) {
-    const { document } = props;
-    const tokens = new MarkdownLexer().parse(document.content);
+    const { content } = props;
+    const tokens = new MarkdownLexer().parse(content);
 
     return (
         <div className="md_document">
