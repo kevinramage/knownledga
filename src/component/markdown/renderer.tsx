@@ -1,5 +1,6 @@
 import { IDocument } from "../../../common/document.ts";
-import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic } from "./lexer.ts"
+import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid } from "./lexer.ts"
+import { IFlowChartNode, IMermaidFlowChart } from "./mermaidLexer.ts";
 
 /*
 
@@ -40,6 +41,8 @@ function renderBlock(block: IMarkdownToken) {
         return renderParagraph(block as IMarkdownParagraph);
     } else if (block.type === "Blockquote") {
         return renderBlockQuote(block as IMarkdownBlockQuote);
+    } else if (block.type === "Mermaid") {
+        return renderMermaidGraph(block as IMarkdownMermaid);
     } else {
         console.error("Invalid block: ", block);
         return (<></>)
@@ -168,3 +171,62 @@ function renderItalic(inline: IMarkdownBold) {
 function renderText(inline: IMarkdownInlineText) {
     return <span key={inline.id}>{inline.text}</span>
 }
+
+function renderMermaidGraph(mermaid: IMarkdownMermaid) {
+    if (mermaid.graph && mermaid.graph.type === "FlowChart") {
+        return renderFlowChartGraph(mermaid.graph as IMermaidFlowChart);
+    } else if (mermaid.graph) {
+        console.error("Invalid mermaid graph type", mermaid.graph.type);
+        return <></>
+    } else {
+        console.error("Invalid mermaid graph");
+        return <></>
+    }
+}
+
+function renderFlowChartGraph(graph: IMermaidFlowChart) {
+    return (
+        <svg key={graph.id} width={graph.width}>
+            { graph.nodes.map(n => renderFlowChartNode(n) ) }
+        </svg>
+    )
+}
+
+function renderFlowChartNode(node: IFlowChartNode) {
+    if (node.nodeType === "SQUARE") {
+        return renderFlowChartSquareNode(node);
+    } else if (node.nodeType === "ROUND_EDGE") {
+        return renderFlowChartRoundEdge(node);
+    } else {
+        console.error("Inavlid flowChart node type: " + node.nodeType);
+        return <></>
+    }
+}
+
+function renderFlowChartSquareNode(node: IFlowChartNode) {
+    return (
+        <g key={node.id}>
+            <rect key={node.id} x={node.positionX} y={node.positionY} width={node.width} height={50} fill="#2780e31a" stroke="#343a40"></rect>
+            <text x={node.textPositionX} y={node.textPositionY} width={node.textWidth} height={50} fill="white">{node.title}</text>
+        </g>
+    )
+}
+
+function renderFlowChartRoundEdge(node: IFlowChartNode) {
+    return (
+        <g key={node.id}>
+            <rect key={node.id} x={node.positionX} y={node.positionY} width={node.width} height={50} rx={5} ry={5} fill="#2780e31a" stroke="#343a40"></rect>
+            <text x={node.textPositionX} y={node.textPositionY} width={node.textWidth} height={50} fill="white">{node.title}</text>
+        </g>
+    )
+}
+
+function renderFlowChartStadiumShaped(node: IFlowChartNode) {
+    return (
+        <g key={node.id}>
+            <rect key={node.id} x={node.positionX} y={node.positionY} width={node.width} height={50} rx={20} ry={20} fill="#2780e31a" stroke="#343a40"></rect>
+            <text x={node.textPositionX} y={node.textPositionY} width={node.textWidth} height={50} fill="white">{node.title}</text>
+        </g>
+    )
+}
+

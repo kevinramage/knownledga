@@ -13,6 +13,13 @@ This document help to understand the content of each versions
 
 **V 0.0.2 - File explorer**
 
-- [ ] Create a new file
-- [ ] Delete a file
-- [ ] Update exiting file
+- [X] Create a new file
+- [X] Delete a file
+- [X] Update exiting file
+- [X] Initialize Mermaid FlowChart rendering
+
+**V 0.0.3 - Markdown toolbar**
+
+- [ ] View directory in file explore
+- [ ] Add markdown editor WYSIWYG for basic feature
+- [ ] Add Mermaid FlowChart relationship rendering
