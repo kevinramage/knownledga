@@ -40,4 +40,5 @@
     - [ ] New shapes 11.3
 
 
-[Source](https://mermaid.js.org/syntax/flowchart.html#a-stadium-shaped-node)
+[Mermaid source](https://mermaid.js.org/syntax/flowchart.html#a-stadium-shaped-node)
+[Quoto source](https://quarto.org/docs/authoring/diagrams.html)

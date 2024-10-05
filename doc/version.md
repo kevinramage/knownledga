@@ -13,10 +13,10 @@ This document help to understand the content of each versions
 
 **V 0.0.2 - File explorer**
 
-- [X] Create a new file
-- [X] Delete a file
-- [X] Update exiting file
-- [X] Initialize Mermaid FlowChart rendering
+- [x] Create a new file
+- [x] Delete a file
+- [x] Update exiting file
+- [x] Initialize Mermaid FlowChart rendering
 
 **V 0.0.3 - Markdown toolbar**
 
