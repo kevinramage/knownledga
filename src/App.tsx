@@ -22,9 +22,6 @@ function App() {
 
     // Load default workspace
     serviceManager.loadWorkspaceByName("default").then((workspace) => { setWorkspace(workspace); });
-
-    // Init event manager
-    eventManager.listen();
   }, [])
 
   return (
@@ -38,12 +35,12 @@ function App() {
       <Panel className='panel' defaultSize={100}>
         <PanelGroup direction='horizontal'>
           <Panel className='panel' defaultSize={options.panels.left.size} minSize={10} maxSize={20}>
-            <FileExporerView workspace={workspace} />
+            <FileExporerView workspace={workspace} eventManager={eventManager} />
           </Panel>
           <PanelResizeHandle className='panelResize' />
           <Panel className='panel'>
             { workspace.selectedDocument && (
-                <MarkdownView document={workspace.selectedDocument} />
+                <MarkdownView document={workspace.selectedDocument} eventManager={eventManager} />
             )}
           </Panel>
           { !options.panels.right.disable && (

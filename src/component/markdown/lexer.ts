@@ -1,6 +1,14 @@
 import { v4 } from "uuid";
+import { FlowChartOrientation, IMermaidFlowChart, IMermaidGraph, MermaidGraphType, MermaidLexer } from "./mermaidLexer";
 
 export class MarkdownLexer {
+
+    private _mermaidLexer : MermaidLexer;
+
+    constructor() {
+        this._mermaidLexer = new MermaidLexer();
+    }
+
     public parse(content: string) {
         let tokens : IMarkdownToken[] = [];
         let text = content.replace(/\r\n|\r/g, '\n');
@@ -13,6 +21,10 @@ export class MarkdownLexer {
                 tokens.push(token);
             // Heading
             } else if (token = this.generateHeadingToken(text)) {
+                text = text.substring(token.raw.length);
+                tokens.push(token);
+            // Mermaid
+            } else if (token = this.generateMermaid(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
             // Fence
@@ -259,6 +271,17 @@ export class MarkdownLexer {
             return null;
         }
     }
+
+    private generateMermaid(text: string): IMarkdownMermaid | null {
+        const match = mermaidDiagram.exec(text);
+        if (match) {
+            const token = { id: v4(), type: "Mermaid", raw: match[0] } as IMarkdownMermaid;
+            token.graph = this._mermaidLexer.parse(match[1]);
+            return token;
+        } else {
+            return null;
+        }
+    }
 }
 
 
@@ -325,9 +348,16 @@ export interface IMarkdownInlineText extends IMarkdownToken {
     text: string;
 }
 
-export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "OrderedList" | "Fence" | "Table" | "Checklist" | "Paragraph" | "Blockquote" |
- "Link" | "Bold" | "Italic" | "Text";
+export interface IMarkdownMermaid extends IMarkdownToken {
+    graph: IMermaidGraph | null;
+}
 
+
+
+
+
+export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "OrderedList" | "Fence" | "Table" | "Checklist" | "Paragraph" | "Blockquote" |
+ "Link" | "Bold" | "Italic" | "Text" | "Mermaid";
 
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
@@ -342,3 +372,4 @@ const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1
 const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|]{2}([^\n]+)[(\*|]{2}/;
 const italicRegex = /^[(\*|]([^\n]+)[(\*|]/;
+const mermaidDiagram = /\`\`\`{mermaid}\n((?:(.*)\n)*)\`\`\`/;

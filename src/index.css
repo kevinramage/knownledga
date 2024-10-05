@@ -93,6 +93,11 @@ button:focus-visible {
   width: 100%;
 }
 
+.fileExplorerView .fileExplorerButtons {
+  position: absolute;
+  right: 10px;
+}
+
 .fileExplorerView .MuiAppBar-root {
   background-color: var(--color-button-background);
 }
@@ -100,5 +105,14 @@ button:focus-visible {
 textarea {
   width: 100%;
   background-color: var(--color-button-background);
+  color: white;
+}
+
+.fileExplorerView .MuiToolbar-root {
+  border-bottom: solid 1px var(--color-button-background);
+  border-color: white
+}
+
+.newFileName .MuiInputBase-root {
   color: white;
 }

@@ -16,31 +16,126 @@ export class EventManager {
         this._workspace = workspace;
         this._setWorkspace = setWorkspace;
     }
-    
-    public listen() {
-        document.addEventListener
-        document.addEventListener(SELECTDOCUMENT_EVENT, (e) => { 
-            const customEvent = e as CustomEvent;
-            this.selectDocumentEvent(customEvent); 
-            customEvent.stopImmediatePropagation() 
-        }, true );
-    }
 
-    private selectDocumentEvent(e: CustomEvent) {
-        const document = e.detail.document as IDocument;
-        if (this._service) {
-            this._service.loadDocumentByPath(document.path).then((doc) => {
-                if (this._workspace && this._setWorkspace) {
-                    this._setWorkspace({
-                        ...this._workspace,
+    public selectDocument(document: IDocument) {
+        return new Promise<IDocument|null>((resolve) => {
+            const workspace = this._workspace;
+            const setWorkspace = this._setWorkspace;
+            if (this._service && workspace && setWorkspace) {
+                this._service.loadDocumentByPath(document.path).then((doc) =>{
+                    setWorkspace({
+                        ...workspace,
                         selectedDocument: doc,
-                        documents: this._workspace.documents.map((d => {
-                            if (d.path === doc.path) { return { ...d, content: doc.content }
+                        documents: workspace.documents.map((d => {
+                            if (document.path === doc.path) { return { ...d, content: doc.content }
                             } else { return d; }
                         }))
                     })
-                }
-            });
+                    resolve(doc);
+                }).catch(() => {
+                    resolve(null);
+                })
+            } else {
+                resolve(null);
+            }
+        });
+    }
+
+    public unSelectDocument() {
+        const workspace = this._workspace;
+        const setWorkspace = this._setWorkspace;
+        if (workspace && setWorkspace) {
+            setWorkspace({
+                ...workspace,
+                selectedDocument: undefined
+            })
         }
+    }
+
+    public addFile(newFileName: string) {
+        return new Promise<void>((resolve) => {
+            const workspace = this._workspace;
+            const setWorkspace = this._setWorkspace;
+            if (this._service && workspace && setWorkspace) {
+                this._service.addNewFile(newFileName).then((doc) => {
+                    setWorkspace({
+                        ...workspace,
+                        selectedDocument: doc,
+                        documents: [ ...workspace.documents, doc ]
+                    })
+                }).finally(() => {
+                    resolve();
+                })
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    public updateFile(id: string, path: string, content: string) {
+        return new Promise<void>((resolve) => {
+            const workspace = this._workspace;
+            const setWorkspace = this._setWorkspace;
+            if (this._service && workspace && setWorkspace) {
+                this._service.updateFileContent(id, path, content).then((doc) => {
+                    setWorkspace({
+                        ...workspace,
+                        documents: workspace.documents.map((d => {
+                            if (d.path === path) { return doc }
+                            else { return d }
+                        }))
+                    })
+                }).finally(() => {
+                    resolve();
+                })
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    public deleteFile(path: string) {
+        return new Promise<void>((resolve) => {
+            const service = this._service;
+            const workspace = this._workspace;
+            const setWorkspace = this._setWorkspace;
+            if (service && workspace && setWorkspace) {
+                service.deleteFile(path).then(() => {
+                    setWorkspace({
+                        ...workspace,
+                        documents: workspace.documents.filter(d => { return d.path !== path; })
+                    })
+                }).finally(() => {
+                    resolve();
+                })
+            } else {
+                resolve();
+            }
+        });
+    }
+
+    public renameFile(id: string, oldPath: string, newPath: string) {
+        return new Promise<void>((resolve) => {
+            const workspace = this._workspace;
+            const setWorkspace = this._setWorkspace;
+            if (this._service && workspace && setWorkspace) {
+                this._service.renameFile(oldPath, newPath).then(() => {
+                    setWorkspace({
+                        ...workspace,
+                        documents: workspace.documents.map(d => {
+                            if (d.id === id) { return {
+                                ...d,
+                                path: newPath
+                            } }
+                            else { return d; }
+                        })
+                    })
+                }).finally(() => {
+                    resolve();
+                })
+            } else {
+                resolve();
+            }
+        });
     }
 }

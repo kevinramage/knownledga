@@ -10,3 +10,16 @@ This document help to understand the content of each versions
 - [x] Open default workspace when window ready
 - [x] List all file present in repository and show it in file exporer view
 - [x] When click on a file, open markdown view (Editor view and renderer view)
+
+**V 0.0.2 - File explorer**
+
+- [X] Create a new file
+- [X] Delete a file
+- [X] Update exiting file
+- [X] Initialize Mermaid FlowChart rendering
+
+**V 0.0.3 - Markdown toolbar**
+
+- [ ] View directory in file explore
+- [ ] Add markdown editor WYSIWYG for basic feature
+- [ ] Add Mermaid FlowChart relationship rendering
