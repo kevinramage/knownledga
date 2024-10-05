@@ -4,10 +4,14 @@ import AddIcon from '@mui/icons-material/Add';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { SimpleTreeView } from '@mui/x-tree-view/SimpleTreeView';
-import { TreeItem } from "@mui/x-tree-view";
 import { IWorkspace } from "../../../common/workspace.ts";
 import { useState } from "react";
 import { EventManager } from "../../business/eventManager.ts";
+import { CustomTreeItem } from "../utils/customTreeItem.tsx";
+import SegmentIcon from '@mui/icons-material/Segment';
+import FolderIcon from '@mui/icons-material/Folder';
+import DeviceUnknownIcon from '@mui/icons-material/DeviceUnknown';
+import { IDocument } from "../../../common/document.ts";
 
 export interface IFileExplorerViewProps {
     workspace: IWorkspace
@@ -43,13 +47,7 @@ export function FileExporerView(props: IFileExplorerViewProps) {
                 </Toolbar>
                 <SimpleTreeView>
                     { workspace && workspace.documents.map(d => {
-                        const needFocus = workspace.selectedDocument && d.path === workspace.selectedDocument.path;
-                        return (
-                            <TreeItem key={d.id} itemId={d.id} label={d.name} autoFocus={needFocus} onClick={(e) => { 
-                                e.stopPropagation();
-                                eventManager.selectDocument(d);
-                            }} />
-                        )
+                        return renderElement(d, workspace, eventManager);
                     })}
                     { newFileName !== undefined && (
                         <TextField className="newFileName" value={newFileName} onChange={(e) => setNewFileName(e.target.value)} onBlur={(e) => {
@@ -66,5 +64,32 @@ export function FileExporerView(props: IFileExplorerViewProps) {
                 </SimpleTreeView>
             </AppBar>
         </Box>
+    )
+}
+
+function renderElement(d: IDocument,workspace: IWorkspace, eventManager: EventManager) {
+    if (d.type === "FOLDER") {
+        return renderFolder(d, workspace, eventManager);
+    } else {
+        return renderDocument(d, workspace, eventManager);
+    }
+}
+
+function renderDocument(d: IDocument,workspace: IWorkspace, eventManager: EventManager) {
+    const needFocus = workspace.selectedDocument && d.path === workspace.selectedDocument.path;
+    const labelIcon = d.type === "MARKDOWN" ? SegmentIcon : SegmentIcon;
+    return (
+        <CustomTreeItem key={d.id} className="treeViewItem" itemId={d.id} label={d.name} labelIcon={labelIcon} autoFocus={needFocus} onClick={(e) => { 
+            e.stopPropagation();
+            eventManager.selectDocument(d);
+        }} />
+    )
+}
+
+function renderFolder(d: IDocument,workspace: IWorkspace, eventManager: EventManager) {
+    return (
+        <CustomTreeItem key={d.id} className="treeViewItem" itemId={d.id} label={d.name} labelIcon={FolderIcon}>
+            { d.subDocuments.map(sd => renderElement(sd, workspace, eventManager))}
+        </CustomTreeItem>
     )
 }

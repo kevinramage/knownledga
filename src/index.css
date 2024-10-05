@@ -113,6 +113,14 @@ textarea {
   border-color: white
 }
 
+.fileExplorerView .treeViewItem .MuiBox-root {
+  color: white;
+}
+
+.fileExplorerView .treeItemContainer svg {
+  fill: white;
+}
+
 .newFileName .MuiInputBase-root {
   color: white;
 }

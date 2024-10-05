@@ -1,10 +1,11 @@
 import { mkdir, readdir, readFile, stat, writeFile } from "fs/promises";
 import { IWorkspace, MARKDOWN_EXAMPLE } from "../../common/workspace.ts";
 import { fastify } from "../index.ts";
-import { IDocument } from "../../common/document.ts";
-import { basename, join } from "path";
+import { DOCUMENT_TYPE, IDocument } from "../../common/document.ts";
+import path, { basename, join } from "path";
 import { homedir } from "os";
 import { v4 } from "uuid";
+import { generateTreeView, sortTreeDocuments } from "../utils.ts";
 
 const workspacesPath = join(homedir(), ".knownledga", "workspaces");;
 const defaultWorkspacePath = join(homedir(), ".knownledga", "workspaces", "default");
@@ -38,15 +39,28 @@ export class WorkspaceBusiness {
     private static _readWorkspace(name: string) {
         return new Promise<IWorkspace>((resolve, reject) => {
             fastify.log.info("WorkspaceBusiness.readWorkspace - Call method");
-            const path = join(workspacesPath, name);
-            readdir(path, {withFileTypes: true, recursive: true}).then((files) => {
+            
+            const workspacePath = join(workspacesPath, name);
+            readdir(workspacePath, {withFileTypes: true, recursive: true}).then((files) => {
                 const documents = files.map(f => {
-                    return { id: v4(), name: f.name, path: join(f.parentPath, f.name), content: "" } as IDocument
+
+                    // File type
+                    let fileType : DOCUMENT_TYPE = "UNKNOWN";
+                    if (f.isDirectory()) { fileType = "FOLDER" }
+                    else if (path.extname(f.name).toLowerCase() === ".md") { fileType = "MARKDOWN" }
+
+                    // Path
+                    const filePath = join(f.parentPath, f.name);
+                    const relativePath = filePath.substring(workspacePath.length);
+                    
+                    return { id: v4(), type: fileType, name: f.name, path: filePath, relativePath: relativePath, content: "", subDocuments: [] } as IDocument
                 });
+                const treeViewDocuments = generateTreeView(documents);
+                const sortedDocuments = sortTreeDocuments(treeViewDocuments);
                 const workspace : IWorkspace = {
                     id: v4(),
-                    path: path,
-                    documents: documents
+                    path: workspacePath,
+                    documents: sortedDocuments
                 }
                 resolve(workspace);
             }).catch((err) => {

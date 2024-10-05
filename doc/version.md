@@ -20,6 +20,7 @@ This document help to understand the content of each versions
 
 **V 0.0.3 - Markdown toolbar**
 
+- [ ] Reduce binaries size
 - [ ] View directory in file explore
 - [ ] Add markdown editor WYSIWYG for basic feature
 - [ ] Add Mermaid FlowChart relationship rendering
