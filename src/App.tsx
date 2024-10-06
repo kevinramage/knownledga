@@ -38,7 +38,7 @@ function App() {
             <FileExporerView workspace={workspace} eventManager={eventManager} />
           </Panel>
           <PanelResizeHandle className='panelResize' />
-          <Panel className='panel'>
+          <Panel className='panel panelWithoutFlex'>
             { workspace.selectedDocument && (
                 <MarkdownView document={workspace.selectedDocument} eventManager={eventManager} />
             )}
