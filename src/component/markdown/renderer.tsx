@@ -1,4 +1,3 @@
-import { IDocument } from "../../../common/document.ts";
 import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid } from "./lexer.ts"
 import { IFlowChartNode, IMermaidFlowChart } from "./mermaidLexer.ts";
 
@@ -14,6 +13,7 @@ export interface IMarkdownRendererViewProps {
 export function MarkdownRendererView(props: IMarkdownRendererViewProps) {
     const { content } = props;
     const tokens = new MarkdownLexer().parse(content);
+    console.info(tokens);
 
     return (
         <div className="md_document">
@@ -149,7 +149,7 @@ function renderTable(block: IMarkdownTableToken) {
 }
 
 function renderParagraph(block: IMarkdownParagraph) {
-    return ( <p key={block.id}>{renderInline(block.tokens)}</p> )
+    return ( <p className="md_paragraph" key={block.id}>{renderInline(block.tokens)}</p> )
 }
 
 function renderBlockQuote(block: IMarkdownBlockQuote) {

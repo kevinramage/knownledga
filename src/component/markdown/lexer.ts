@@ -213,7 +213,7 @@ export class MarkdownLexer {
         const match = paragraphRegex.exec(text);
         if (match) {
             const token = { id: v4(), type: "Paragraph", raw: match[0], tokens: [] } as IMarkdownParagraph;
-            token.tokens = this.parseInline(match[1]);
+            token.tokens = this.parseInline(match[1].trimEnd());
             return token;
         } else {
             return null;
@@ -365,7 +365,8 @@ const orderedlistRegex = /^( {0,3}(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
 const unorderedlistRegex = /^( {0,3}(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
 const fenceRegex = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 const checkListRegex = /^( {0,3}(?:[*+-]))[ \t]\[(x|X| )\]([^\n]+?)?(?:\n|$)/;
-const paragraphRegex = /^([^\n]+(?:\n[^\n]+)*)/;
+//const paragraphRegex = /^([^\n]+(?:\n[^\n]+)*)/;
+const paragraphRegex = /^([^\n]+(?:\n)*)/;
 const blockQuoteRegex = /^( {0,3}> ?([^\n]*)(?:\n|$))+/;
 const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:\| *)?)(?:\n((?:(?! *\n).*(?:\n|$))*)\n*|$)/;
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
