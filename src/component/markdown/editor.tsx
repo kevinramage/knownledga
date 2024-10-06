@@ -5,8 +5,8 @@ import TitleIcon from '@mui/icons-material/Title';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import ChecklistIcon from '@mui/icons-material/Checklist';
-import { ChangeEvent, ChangeEventHandler, KeyboardEvent, useRef, useState } from "react";
-import { IEditorBlock, MarkdownEditorBlock } from "./editorBlock.tsx";
+import { ChangeEvent, ChangeEventHandler, KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { getBlocksFromContent, IEditorBlock, MarkdownEditorBlock } from "./editorBlock.tsx";
 
 export interface IMarkdownEditorProps {
     doc: IDocument,
@@ -20,6 +20,12 @@ export function MarkdownEditor(props: IMarkdownEditorProps) {
     const [ lineNumber, setLineNumber ] = useState(1);
     const [ blocks, setBlocks ] = useState([] as IEditorBlock []);
     const [ currentBlock, setCurrentBlock ] = useState(null as IEditorBlock | null);
+    const depContent = JSON.stringify(content);
+
+    const [count, setCount] = useState(0);
+    //const a = "test";
+    //useEffect(() => { console.info("new exec"); setBlocks(getBlocksFromContent(content)), [a] });
+    useEffect(() => { setBlocks(getBlocksFromContent(content))}, [depContent])
 
     /*
     const manageKeyEvtCurrentBlock = (e: ChangeEvent<HTMLTextAreaElement>) => {

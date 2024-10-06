@@ -13,7 +13,6 @@ export interface IMarkdownRendererViewProps {
 export function MarkdownRendererView(props: IMarkdownRendererViewProps) {
     const { content } = props;
     const tokens = new MarkdownLexer().parse(content);
-    console.info(tokens);
 
     return (
         <div className="md_document">
