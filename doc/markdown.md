@@ -5,7 +5,7 @@
 - [ ] Alternative heading syntax (Not compatible yet)
 - [ ] Paragraph line break (Not yell managed yet)
 - [x] Bold syntax with *
-- [ ] Bold syntax with _ (Not compatible yet)
+- [x] Bold syntax with _
 - [ ] Italic syntax with * (Not compatible yet)
 - [ ] Italic syntax with _ (Not compatible yet)
 - [ ] Blockquote (Rendering to review + manage inline token)

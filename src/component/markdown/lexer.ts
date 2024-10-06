@@ -390,7 +390,7 @@ const blockQuoteRegex = /^( {0,3}> ?([^\n]*)(?:\n|$))+/;
 const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:\| *)?)(?:\n((?:(?! *\n).*(?:\n|$))*)\n*|$)/;
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
 const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
-const boldRegex = /^[(\*|]{2}([^\n]+)[(\*|]{2}/;
+const boldRegex = /^[(\*|_]{2}([^\n]+)[(\*|_]{2}/;
 const italicRegex = /^[(\*|]([^\n]+)[(\*|]/;
 const strikeThroughRegex = /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/;
 const mermaidDiagram = /\`\`\`{mermaid}\n((?:(.*)\n)*)\`\`\`/;
