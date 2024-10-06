@@ -82,6 +82,10 @@ export class MarkdownLexer {
             } else if (token = this.generateItalic(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
+            // StrikeThrough
+            } else if (token = this.generateStrikeThrough(text)) {
+                text = text.substring(token.raw.length);
+                tokens.push(token);
             // Text
             } else if (token = this.generateText(text)) {
                 text = text.substring(token.raw.length);
@@ -262,6 +266,17 @@ export class MarkdownLexer {
         }
     }
 
+    private generateStrikeThrough(text: string): IMarkdownStrikeThrough | null {
+        const match = strikeThroughRegex.exec(text);
+        if (match) {
+            const token = { id: v4(), type: "StrikeThrough", raw: match[0], tokens: []} as IMarkdownStrikeThrough;
+            token.tokens = this.parseInline(match[2])
+            return token;
+        } else {
+            return null;
+        }
+    }
+
     private generateText(text: string): IMarkdownInlineText | null {
         const match = inlineTextRegex.exec(text);
         if (match) {
@@ -344,6 +359,10 @@ export interface IMarkdownItalic extends IMarkdownToken {
     tokens: IMarkdownToken[];
 }
 
+export interface IMarkdownStrikeThrough extends IMarkdownToken {
+    tokens: IMarkdownToken[];
+}
+
 export interface IMarkdownInlineText extends IMarkdownToken {
     text: string;
 }
@@ -357,7 +376,7 @@ export interface IMarkdownMermaid extends IMarkdownToken {
 
 
 export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "OrderedList" | "Fence" | "Table" | "Checklist" | "Paragraph" | "Blockquote" |
- "Link" | "Bold" | "Italic" | "Text" | "Mermaid";
+ "Link" | "Bold" | "Italic" | "StrikeThrough" | "Text" | "Mermaid";
 
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
@@ -373,4 +392,5 @@ const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1
 const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|]{2}([^\n]+)[(\*|]{2}/;
 const italicRegex = /^[(\*|]([^\n]+)[(\*|]/;
+const strikeThroughRegex = /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/;
 const mermaidDiagram = /\`\`\`{mermaid}\n((?:(.*)\n)*)\`\`\`/;

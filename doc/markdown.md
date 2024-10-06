@@ -35,7 +35,7 @@
 - [ ] Footnote (Not compatible yet)
 - [ ] Heading id (Not compatible yet)
 - [ ] Definition list (Not compatible yet)
-- [ ] Strikethrough (Not compatible yet)
+- [x] Strikethrough
 - [ ] Task list (Partial not compatible with inline tokens)
 - [ ] Sub task list (Not compatible yet)
 - [ ] Emoji (Not compatible yet)

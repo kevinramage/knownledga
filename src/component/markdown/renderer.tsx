@@ -1,4 +1,4 @@
-import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid } from "./lexer.ts"
+import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid, IMarkdownStrikeThrough } from "./lexer.ts"
 import { IFlowChartNode, IMermaidFlowChart } from "./mermaidLexer.ts";
 
 /*
@@ -58,6 +58,8 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
                 return renderBold(t as IMarkdownBold);
             } else if (t.type === "Italic") {
                 return renderItalic(t as IMarkdownItalic);
+            } else if (t.type === "StrikeThrough") {
+                return renderStrikeThrough(t as IMarkdownStrikeThrough);
             } else if (t.type === "Text") {
                 return renderText(t as IMarkdownInlineText);
             } else {
@@ -166,6 +168,11 @@ function renderBold(inline: IMarkdownBold) {
 function renderItalic(inline: IMarkdownBold) {
     return <em key={inline.id}>{renderInline(inline.tokens)}</em>
 }
+
+function renderStrikeThrough(inline: IMarkdownStrikeThrough) {
+    return <del key={inline.id}>{renderInline(inline.tokens)}</del>
+}
+
 
 function renderText(inline: IMarkdownInlineText) {
     return <span key={inline.id}>{inline.text}</span>
