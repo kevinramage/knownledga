@@ -6,8 +6,8 @@
 - [ ] Paragraph line break (Not yell managed yet)
 - [x] Bold syntax with *
 - [x] Bold syntax with _
-- [ ] Italic syntax with * (Not compatible yet)
-- [ ] Italic syntax with _ (Not compatible yet)
+- [x] Italic syntax with *
+- [x] Italic syntax with _
 - [ ] Blockquote (Rendering to review + manage inline token)
 - [ ] Blockquote Multiple paragraphe (Not compatible yet)
 - [ ] Nested blockquote (Not compatible yet)

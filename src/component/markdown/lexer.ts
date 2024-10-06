@@ -391,6 +391,6 @@ const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
 const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|_]{2}([^\n]+)[(\*|_]{2}/;
-const italicRegex = /^[(\*|]([^\n]+)[(\*|]/;
+const italicRegex = /^[(\*|_]([^\n]+)[(\*|_]/;
 const strikeThroughRegex = /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/;
 const mermaidDiagram = /\`\`\`{mermaid}\n((?:(.*)\n)*)\`\`\`/;
