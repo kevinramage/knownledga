@@ -12,7 +12,7 @@
 - [ ] Blockquote Multiple paragraphe (Not compatible yet)
 - [ ] Nested blockquote (Not compatible yet)
 - [x] Ordered list
-- [ ] Ordered sub list (Not compatible yet)
+- [x] Ordered sub list
 - [x] Nonordered list
 - [x] Nonordered sub list
 - [ ] Local images (Not compatible yet)

@@ -65,6 +65,8 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
                 return renderStrikeThrough(t as IMarkdownStrikeThrough);
             } else if (t.type === "Br") {
                 return renderBr(t as IMarkdownBrToken);
+            } else if (t.type === "OrderedList") {
+                return renderOrderedList(t as IMarkdownOrderedListToken);
             } else if (t.type === "UnorderedList") {
                 return renderUnorderedList(t as IMarkdownUnorderedListToken);
             } else if (t.type === "Container") {
@@ -120,7 +122,10 @@ function renderUnorderedList(block: IMarkdownUnorderedListToken) {
 function renderOrderedList(block: IMarkdownOrderedListToken) {
     return (
         <ol key={block.id}>
-            { block.tokens.map((t, i) => { return (<li key={i}>{t}</li>)})}
+            { block.tokens.map((t, i) => {
+                const className = (t.type === "OrderedList") ? "md_li_withoutdisk" : "md_li";
+                return (<li key={i} className={className}>{renderInline([t])}</li>)             
+            })}
         </ol>
     )
 }

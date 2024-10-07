@@ -200,14 +200,44 @@ export class MarkdownLexer {
         let content = text;
         const match = orderedlistRegex.exec(content);
         if (match) {
-            const token = { id: v4(), type: "OrderedList", raw: "", tokens: [] } as IMarkdownOrderedListToken;
+            const spaces = match[2];
+            const token = { id: v4(), type: "OrderedList", spaces: spaces, raw: "", tokens: [] } as IMarkdownOrderedListToken;
+            let i =0;
             while (content) {
+                if (i >= 50) { console.error("generateOrderedList - Infinity loop detected - Security"); break; }
+                i++;
                 const match = orderedlistRegex.exec(content);
                 if (match) {
-                    const raw = match[0];
-                    token.raw += raw;
-                    token.tokens.push(match[2]);
-                    content = content.substring(raw.length);
+                    // Same space level
+                    if (match[2] === spaces) {
+                        const raw = match[0];
+                        token.raw += raw;
+                        if (match[3]) {
+                            const subTokens = this.parseInline(match[3]);
+                            if (subTokens.length === 1) {
+                                token.tokens.push(subTokens[0]);
+                                content = content.substring(raw.length);
+                            } else {
+                                const tokenContainer = { id: v4(), type: "Container", tokens: subTokens } as IMarkdownContainer;
+                                token.tokens.push(tokenContainer);
+                                content = content.substring(raw.length);
+                            }
+                        // Not valid token
+                        } else {
+                            content = content.substring(match[0].length);
+                        }
+                    // Increase space 
+                    } else if (match[2].length > spaces.length) {
+                        const subToken = this.generateOrderedList(content);
+                        if (subToken) {
+                            token.tokens.push(subToken);
+                            content = content.substring(subToken.raw.length);
+                            token.raw += subToken.raw;
+                        }
+                    } else {
+                        break;
+                    }
+
                 } else {
                     break;
                 }
@@ -383,7 +413,8 @@ export interface IMarkdownUnorderedListToken extends IMarkdownToken {
 }
 
 export interface IMarkdownOrderedListToken extends IMarkdownToken {
-    tokens: string[];
+    spaces: string;
+    tokens: IMarkdownToken[];
 }
 
 export interface IMarkdownCheckListToken extends IMarkdownToken {
@@ -450,7 +481,7 @@ export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "Ordered
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const headingAlternative = /^ {0,3}(.*)\n([=|-]{2,})/;
-const orderedlistRegex = /^( {0,3}(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
+const orderedlistRegex = /^(( {0,})(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
 const unorderedlistRegex = /^(( {0,})(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
 const fenceRegex = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 const checkListRegex = /^( {0,3}(?:[*+-]))[ \t]\[(x|X| )\]([^\n]+?)?(?:\n|$)/;
