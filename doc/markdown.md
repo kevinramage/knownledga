@@ -8,7 +8,7 @@
 - [x] Bold syntax with _
 - [x] Italic syntax with *
 - [x] Italic syntax with _
-- [ ] Blockquote (Rendering to review + manage inline token)
+- [x] Blockquote
 - [ ] Blockquote Multiple paragraphe (Not compatible yet)
 - [ ] Nested blockquote (Not compatible yet)
 - [x] Ordered list

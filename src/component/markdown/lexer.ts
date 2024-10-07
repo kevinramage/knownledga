@@ -246,7 +246,9 @@ export class MarkdownLexer {
     private generateBlockquote(text: string): IMarkdownBlockQuote | null {
         const match = blockQuoteRegex.exec(text);
         if (match) {
-            const token = { id: v4(), type: "Blockquote", raw: match[0], text: match[2] } as IMarkdownBlockQuote;
+            const token = { id: v4(), type: "Blockquote", raw: match[0], tokens: [] } as IMarkdownBlockQuote;
+            console.info(match[2]);
+            token.tokens = this.parseInline(match[2]);
             return token;
         } else {
             return null;
@@ -375,7 +377,7 @@ export interface IMarkdownParagraph extends IMarkdownToken {
 }
 
 export interface IMarkdownBlockQuote extends IMarkdownToken {
-    text: string;
+    tokens: IMarkdownToken[];
 }
 
 export interface IMarkdownLink extends IMarkdownToken {
@@ -423,7 +425,8 @@ const brRegex = /^\n(?!\s*$)/;
 const blockQuoteRegex = /^( {0,3}> ?([^\n]*)(?:\n|$))+/;
 const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:\| *)?)(?:\n((?:(?! *\n).*(?:\n|$))*)\n*|$)/;
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
-const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n)|[^ ](?= {2,}\n)))/;
+//const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n)|[^ ](?= {2,}\n)))/;
+const inlineTextRegex =/^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n|~~.+~~|[\*|_]{1,2}.+[\*|_]{1,2})|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|_]{2}([^\n]+)[(\*|_]{2}/;
 const italicRegex = /^[(\*|_]([^\n]+)[(\*|_]/;
 const strikeThroughRegex = /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/;

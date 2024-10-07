@@ -156,7 +156,7 @@ function renderParagraph(block: IMarkdownParagraph) {
 }
 
 function renderBlockQuote(block: IMarkdownBlockQuote) {
-    return ( <blockquote key={block.id}><p>{block.text}</p></blockquote> )
+    return ( <blockquote key={block.id} className="md_blockquote"><p>{renderInline(block.tokens)}</p></blockquote> )
 }
 
 function renderLink(inline: IMarkdownLink) {
