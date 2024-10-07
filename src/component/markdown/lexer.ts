@@ -148,14 +148,44 @@ export class MarkdownLexer {
         let content = text;
         const match = unorderedlistRegex.exec(content);
         if (match) {
-            const token = { id: v4(), type: "UnorderedList", raw: "", tokens: [] } as IMarkdownUnorderedListToken;
+            const spaces = match[2];
+            const token = { id: v4(), type: "UnorderedList", spaces: spaces, raw: "", tokens: [] } as IMarkdownUnorderedListToken;
+            let i = 0;
             while (content) {
+                if (i >= 50) { console.error("generateUnorderedList - Infinity loop detected - Security"); break; }
+                i++;
                 const match = unorderedlistRegex.exec(content);
                 if (match) {
-                    const raw = match[0];
-                    token.raw += raw;
-                    token.tokens.push(match[2]);
-                    content = content.substring(raw.length);
+                    // Same space level
+                    if (match[2] === spaces) {
+                        const raw = match[0];
+                        token.raw += raw;
+                        if (match[3]) {
+                            const subTokens = this.parseInline(match[3]);
+                            if (subTokens.length === 1) {
+                                token.tokens.push(subTokens[0]);
+                                content = content.substring(raw.length);
+                            } else {
+                                const tokenContainer = { id: v4(), type: "Container", tokens: subTokens } as IMarkdownContainer;
+                                token.tokens.push(tokenContainer);
+                                content = content.substring(raw.length);
+                            }
+                        // Not valid token
+                        } else {
+                            content = content.substring(match[0].length);
+                        }
+                    // Increase space 
+                    } else if (match[2].length > spaces.length) {
+                        const subToken = this.generateUnorderedList(content);
+                        if (subToken) {
+                            token.tokens.push(subToken);
+                            content = content.substring(subToken.raw.length);
+                            token.raw += subToken.raw;
+                        }
+                    } else {
+                        break;
+                    }
+
                 } else {
                     break;
                 }
@@ -348,7 +378,8 @@ export interface IMarkdownHeadingToken extends IMarkdownToken {
 }
 
 export interface IMarkdownUnorderedListToken extends IMarkdownToken {
-    tokens: string[];
+    spaces: string;
+    tokens: IMarkdownToken[];
 }
 
 export interface IMarkdownOrderedListToken extends IMarkdownToken {
@@ -401,6 +432,10 @@ export interface IMarkdownInlineText extends IMarkdownToken {
     text: string;
 }
 
+export interface IMarkdownContainer extends IMarkdownToken {
+    tokens: IMarkdownToken[];
+}
+
 export interface IMarkdownMermaid extends IMarkdownToken {
     graph: IMermaidGraph | null;
 }
@@ -410,13 +445,13 @@ export interface IMarkdownMermaid extends IMarkdownToken {
 
 
 export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "OrderedList" | "Fence" | "Table" | "Checklist" | "Paragraph" | "Blockquote" |
- "Link" | "Bold" | "Italic" | "StrikeThrough" | "Text" | "Br" | "Mermaid";
+ "Link" | "Bold" | "Italic" | "StrikeThrough" | "Text" | "Br" | "Mermaid" | "Container";
 
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 const headingAlternative = /^ {0,3}(.*)\n([=|-]{2,})/;
 const orderedlistRegex = /^( {0,3}(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
-const unorderedlistRegex = /^( {0,3}(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
+const unorderedlistRegex = /^(( {0,})(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
 const fenceRegex = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 const checkListRegex = /^( {0,3}(?:[*+-]))[ \t]\[(x|X| )\]([^\n]+?)?(?:\n|$)/;
 const paragraphRegex = /^([^\n]+(?:\n[^\n]+)*)/;

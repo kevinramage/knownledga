@@ -100,6 +100,9 @@ button:focus-visible {
   padding: 1em 10px .1em;
 }
 
+.md_li_withoutdisk {
+  list-style-type: none;
+}
 
 .fileExplorerView {
   width: 100%;

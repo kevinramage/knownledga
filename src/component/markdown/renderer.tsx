@@ -1,4 +1,5 @@
-import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid, IMarkdownStrikeThrough, IMarkdownBrToken } from "./lexer.ts"
+import { CSSProperties } from "react";
+import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid, IMarkdownStrikeThrough, IMarkdownBrToken, IMarkdownContainer } from "./lexer.ts"
 import { IFlowChartNode, IMermaidFlowChart } from "./mermaidLexer.ts";
 
 /*
@@ -52,7 +53,9 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
     return (
         <>
         { inlineTokens.map(t => {
-            if (t.type === "Link") {
+            if (!t) {
+                console.error("renderInline - Invalid inline token", t);
+            } else if (t.type === "Link") {
                 return renderLink(t as IMarkdownLink);
             } else if (t.type === "Bold") {
                 return renderBold(t as IMarkdownBold);
@@ -62,6 +65,10 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
                 return renderStrikeThrough(t as IMarkdownStrikeThrough);
             } else if (t.type === "Br") {
                 return renderBr(t as IMarkdownBrToken);
+            } else if (t.type === "UnorderedList") {
+                return renderUnorderedList(t as IMarkdownUnorderedListToken);
+            } else if (t.type === "Container") {
+                return renderContainer(t as IMarkdownContainer);
             } else if (t.type === "Text") {
                 return renderText(t as IMarkdownInlineText);
             } else {
@@ -102,12 +109,15 @@ function renderFence(block: IMarkdownFenceToken) {
 function renderUnorderedList(block: IMarkdownUnorderedListToken) {
     return (
         <ul key={block.id}>
-            { block.tokens.map((t, i) => { return (<li key={i}>{t}</li>)})}
+            { block.tokens.map((t, i) => {
+                const className = (t.type === "UnorderedList") ? "md_li_withoutdisk" : "md_li";
+                return (<li key={i} className={className}>{renderInline([t])}</li>)             
+            })}
         </ul>
     )
 }
 
-function renderOrderedList(block: IMarkdownUnorderedListToken) {
+function renderOrderedList(block: IMarkdownOrderedListToken) {
     return (
         <ol key={block.id}>
             { block.tokens.map((t, i) => { return (<li key={i}>{t}</li>)})}
@@ -177,6 +187,10 @@ function renderStrikeThrough(inline: IMarkdownStrikeThrough) {
 
 function renderBr(inline: IMarkdownBrToken) {
     return <br key={inline.id} />
+}
+
+function renderContainer(container: IMarkdownContainer) {
+    return (<span key={container.id}>{renderInline(container.tokens)}</span>)
 }
 
 function renderText(inline: IMarkdownInlineText) {

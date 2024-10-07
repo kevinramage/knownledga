@@ -14,7 +14,7 @@
 - [x] Ordered list
 - [ ] Ordered sub list (Not compatible yet)
 - [x] Nonordered list
-- [ ] Nonordered sub list (Not compatible yet)
+- [x] Nonordered sub list
 - [ ] Local images (Not compatible yet)
 - [ ] External images (Not compatible yet)
 - [ ] Internal links (not detected yet, must be open directly on soft)
