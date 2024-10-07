@@ -138,4 +138,30 @@ export class EventManager {
             }
         });
     }
+
+    public openDomentFromPath(path: string) {
+        const workspace = this._workspace;
+        if (workspace) {
+            const doc = this.findDocument(workspace.documents, path);
+            if (doc) {
+                this.selectDocument(doc);
+            }
+        }
+    }
+
+    public findDocument(documents: IDocument[], path: string) : IDocument | null {
+        const subPaths = path.replace(/\\/g, "/").split('/');
+        if (subPaths.length === 1) {
+            return documents.find(d => d.relativePath.substring(1) === subPaths[0]) || null;
+        } else if (subPaths.length > 1) {
+            const document = documents.find(d => d.relativePath.substring(1) === subPaths[0]);
+            if (document) {
+                return this.findDocument(document.subDocuments, subPaths.slice(1).join("/"))
+            } else {
+                return null;
+            }  
+        } else {
+            return null;
+        }
+    }
 }

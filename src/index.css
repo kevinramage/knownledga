@@ -80,6 +80,11 @@ button:focus-visible {
   padding: 0px;
 }
 
+.md_paragraph {
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+}
+
 .md_table {
   border: solid 1px lightgray;
 }
@@ -88,6 +93,16 @@ button:focus-visible {
   border: solid 1px lightgray;
 }
 
+.md_blockquote {
+  background: var(--color-button-background);
+  border-left: 10px solid #ccc;
+  margin: 1.5em 10px;
+  padding: 1em 10px .1em;
+}
+
+.md_li_withoutdisk {
+  list-style-type: none;
+}
 
 .fileExplorerView {
   width: 100%;
@@ -104,6 +119,7 @@ button:focus-visible {
 
 textarea {
   width: 100%;
+  height: 100%;
   background-color: var(--color-button-background);
   color: white;
 }
@@ -113,6 +129,49 @@ textarea {
   border-color: white
 }
 
+.fileExplorerView .treeViewItem .MuiBox-root {
+  color: white;
+}
+
+.fileExplorerView .treeItemContainer svg {
+  fill: white;
+}
+
 .newFileName .MuiInputBase-root {
   color: white;
+}
+
+.panelWithoutFlex {
+  display: block;
+}
+
+.toolbar {
+  height: 50px;
+  display: block;
+  width: 100%;
+}
+
+.toolbar .MuiToggleButtonGroup-root {
+  background-color: var(--color-button-background);
+}
+
+.toolbar .MuiToggleButtonGroup-grouped {
+  color: #666;
+}
+
+.toolbar .Mui-selected {
+  color: #FFF;
+}
+
+.toolbar .MuiButtonBase-root svg {
+  color: #FFF;
+}
+
+.line {
+  display: block;
+}
+
+.markdownEditor {
+  border: solid 1px white;
+  min-height: 200px;
 }

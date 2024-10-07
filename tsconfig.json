@@ -16,7 +16,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "sourceMap": false
   },
   "include": ["src", "server", "common"],
   "references": [{ "path": "./tsconfig.node.json" }]
