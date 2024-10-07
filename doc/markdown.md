@@ -3,7 +3,7 @@
 - [x] Paragraph
 - [x] Heading
 - [x] Alternative heading syntax
-- [ ] Paragraph line break (Not yell managed yet)
+- [x] Paragraph line break
 - [x] Bold syntax with *
 - [x] Bold syntax with _
 - [x] Italic syntax with *

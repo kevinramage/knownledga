@@ -89,6 +89,10 @@ export class MarkdownLexer {
             } else if (token = this.generateStrikeThrough(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
+            // Br
+            } else if (token = this.generateBr(text)) {
+                text = text.substring(token.raw.length);
+                tokens.push(token);
             // Text
             } else if (token = this.generateText(text)) {
                 text = text.substring(token.raw.length);
@@ -232,7 +236,7 @@ export class MarkdownLexer {
         const match = paragraphRegex.exec(text);
         if (match) {
             const token = { id: v4(), type: "Paragraph", raw: match[0], tokens: [] } as IMarkdownParagraph;
-            token.tokens = this.parseInline(match[1].trimEnd());
+            token.tokens = this.parseInline(match[1]);
             return token;
         } else {
             return null;
@@ -302,6 +306,16 @@ export class MarkdownLexer {
         }
     }
 
+    private generateBr(text: string): IMarkdownBrToken | null {
+        const match = brRegex.exec(text);
+        if (match) {
+            const token = { id: v4(), type: "Br", raw: match[0] } as IMarkdownBrToken;
+            return token;
+        } else {
+            return null;
+        }
+    }
+
     private generateMermaid(text: string): IMarkdownMermaid | null {
         const match = mermaidDiagram.exec(text);
         if (match) {
@@ -321,6 +335,9 @@ export interface IMarkdownToken {
     raw: string;
 }
 export interface IMarkdownSpaceToken extends IMarkdownToken {
+
+}
+export interface IMarkdownBrToken extends IMarkdownToken {
 
 }
 export interface IMarkdownHeadingToken extends IMarkdownToken {
@@ -391,7 +408,7 @@ export interface IMarkdownMermaid extends IMarkdownToken {
 
 
 export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "OrderedList" | "Fence" | "Table" | "Checklist" | "Paragraph" | "Blockquote" |
- "Link" | "Bold" | "Italic" | "StrikeThrough" | "Text" | "Mermaid";
+ "Link" | "Bold" | "Italic" | "StrikeThrough" | "Text" | "Br" | "Mermaid";
 
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
@@ -400,12 +417,13 @@ const orderedlistRegex = /^( {0,3}(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
 const unorderedlistRegex = /^( {0,3}(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
 const fenceRegex = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 const checkListRegex = /^( {0,3}(?:[*+-]))[ \t]\[(x|X| )\]([^\n]+?)?(?:\n|$)/;
-//const paragraphRegex = /^([^\n]+(?:\n[^\n]+)*)/;
-const paragraphRegex = /^([^\n]+(?:\n)*)/;
+const paragraphRegex = /^([^\n]+(?:\n[^\n]+)*)/;
+const brRegex = /^\n(?!\s*$)/;
+//const paragraphRegex = /^([^\n]+(?:\n)*)/;
 const blockQuoteRegex = /^( {0,3}> ?([^\n]*)(?:\n|$))+/;
 const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:\| *)?)(?:\n((?:(?! *\n).*(?:\n|$))*)\n*|$)/;
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
-const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
+const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n)|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|_]{2}([^\n]+)[(\*|_]{2}/;
 const italicRegex = /^[(\*|_]([^\n]+)[(\*|_]/;
 const strikeThroughRegex = /^(~~?)(?=[^\s~])([\s\S]*?[^\s~])\1(?=[^~]|$)/;

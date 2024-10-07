@@ -1,4 +1,4 @@
-import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid, IMarkdownStrikeThrough } from "./lexer.ts"
+import { IMarkdownBlockQuote, IMarkdownCheckListToken, IMarkdownBold, IMarkdownFenceToken, IMarkdownHeadingToken, IMarkdownInlineText, IMarkdownLink, IMarkdownOrderedListToken, IMarkdownParagraph, IMarkdownSpaceToken, IMarkdownTableToken, IMarkdownToken, IMarkdownUnorderedListToken, MarkdownLexer, IMarkdownItalic, IMarkdownMermaid, IMarkdownStrikeThrough, IMarkdownBrToken } from "./lexer.ts"
 import { IFlowChartNode, IMermaidFlowChart } from "./mermaidLexer.ts";
 
 /*
@@ -60,6 +60,8 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
                 return renderItalic(t as IMarkdownItalic);
             } else if (t.type === "StrikeThrough") {
                 return renderStrikeThrough(t as IMarkdownStrikeThrough);
+            } else if (t.type === "Br") {
+                return renderBr(t as IMarkdownBrToken);
             } else if (t.type === "Text") {
                 return renderText(t as IMarkdownInlineText);
             } else {
@@ -173,6 +175,9 @@ function renderStrikeThrough(inline: IMarkdownStrikeThrough) {
     return <del key={inline.id}>{renderInline(inline.tokens)}</del>
 }
 
+function renderBr(inline: IMarkdownBrToken) {
+    return <br key={inline.id} />
+}
 
 function renderText(inline: IMarkdownInlineText) {
     return <span key={inline.id}>{inline.text}</span>
