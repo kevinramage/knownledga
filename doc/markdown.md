@@ -1,8 +1,8 @@
 # Markdown support
 
 - [x] Paragraph
-- [w] Heading
-- [ ] Alternative heading syntax (Not compatible yet)
+- [x] Heading
+- [x] Alternative heading syntax
 - [ ] Paragraph line break (Not yell managed yet)
 - [x] Bold syntax with *
 - [x] Bold syntax with _

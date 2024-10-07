@@ -23,6 +23,9 @@ export class MarkdownLexer {
             } else if (token = this.generateHeadingToken(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
+            } else if (token = this.generateHeadingAlternativeToken(text)) {
+                text = text.substring(token.raw.length);
+                tokens.push(token);
             // Mermaid
             } else if (token = this.generateMermaid(text)) {
                 text = text.substring(token.raw.length);
@@ -112,6 +115,17 @@ export class MarkdownLexer {
         if (match) {
             const tokens = this.parseInline(match[2].trim());
             return { id: v4() ,type: "Heading", raw: match[0], level: match[1].length, tokens: tokens }
+        } else {
+            return null;
+        }
+    }
+
+    private generateHeadingAlternativeToken(text: string) : IMarkdownHeadingToken | null {
+        const match = headingAlternative.exec(text);
+        if (match) {
+            const tokens = this.parseInline(match[1].trim());
+            const level = match[2].includes("=") ? 1 : 2;
+            return { id: v4() ,type: "Heading", raw: match[0], level: level, tokens: tokens }
         } else {
             return null;
         }
@@ -381,6 +395,7 @@ export type MarkdownTokenType = "Space" | "Heading" | "UnorderedList" | "Ordered
 
 const newlineRegex = /^(?:[ \t]*(?:\n|$))+/;
 const headingRegex = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
+const headingAlternative = /^ {0,3}(.*)\n([=|-]{2,})/;
 const orderedlistRegex = /^( {0,3}(?:\d{1,9}[.)]))([ \t][^\n]+?)?(?:\n|$)/;
 const unorderedlistRegex = /^( {0,3}(?:[*+-]))([ \t][^\n]+?)?(?:\n|$)/;
 const fenceRegex = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
