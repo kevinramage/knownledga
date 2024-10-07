@@ -42,7 +42,7 @@ export class MarkdownLexer {
             } else if (token = this.generateUnorderedList(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
-            // ordered list
+            // Ordered list
             } else if (token = this.generateOrderedList(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
@@ -73,8 +73,12 @@ export class MarkdownLexer {
         while (text) {
             let token = null;
 
+            // Internal link
+            if (token = this.generateInternalLink(text)) {
+                text = text.substring(token.raw.length);
+                tokens.push(token);
             // Link
-            if (token = this.generateLink(text)) {
+            } else if (token = this.generateLink(text)) {
                 text = text.substring(token.raw.length);
                 tokens.push(token);
             // Bold
@@ -307,7 +311,6 @@ export class MarkdownLexer {
         const match = blockQuoteRegex.exec(text);
         if (match) {
             const token = { id: v4(), type: "Blockquote", raw: match[0], tokens: [] } as IMarkdownBlockQuote;
-            console.info(match[2]);
             token.tokens = this.parseInline(match[2]);
             return token;
         } else {
@@ -318,7 +321,17 @@ export class MarkdownLexer {
     private generateLink(text: string): IMarkdownLink | null {
         const match = linkRegex.exec(text);
         if (match) {
-            const token = { id: v4(), type: "Link", raw: match[0], title: match[1], link: match[2] } as IMarkdownLink;
+            const token = { id: v4(), type: "Link", internal: false, raw: match[0], title: match[1], link: match[2] } as IMarkdownLink;
+            return token;
+        } else {
+            return null;
+        }
+    }
+
+    private generateInternalLink(text: string): IMarkdownLink | null {
+        const match = internalLinkRegex.exec(text);
+        if (match) {
+            const token = { id: v4(), type: "Link", internal: true, raw: match[0], title: match[1], link: match[2] } as IMarkdownLink;
             return token;
         } else {
             return null;
@@ -445,6 +458,7 @@ export interface IMarkdownBlockQuote extends IMarkdownToken {
 export interface IMarkdownLink extends IMarkdownToken {
     title: string;
     link: string;
+    internal: boolean;
 }
 
 export interface IMarkdownBold extends IMarkdownToken {
@@ -491,6 +505,7 @@ const brRegex = /^\n(?!\s*$)/;
 const blockQuoteRegex = /^( {0,3}> ?([^\n]*)(?:\n|$))+/;
 const tableRegex = /^ *([^\\n ].*)\n {0,3}((?:\| *)?:?-+:? *(?:\| *:?-+:? *)*(?:\| *)?)(?:\n((?:(?! *\n).*(?:\n|$))*)\n*|$)/;
 const linkRegex = /^\[([^\n]+)\]\(([a-zA-Z][a-zA-Z0-9+.-]{1,31}:\/\/[^\s\x00-\x1f<>]*)\)/;
+const internalLinkRegex = /^\[([^\n]+)\]\(.\/([^\s\x00-\x1f<>]*)\)/;
 //const inlineTextRegex = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n)|[^ ](?= {2,}\n)))/;
 const inlineTextRegex =/^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$|\n|~~.+~~|[\*|_]{1,2}.+[\*|_]{1,2})|[^ ](?= {2,}\n)))/;
 const boldRegex = /^[(\*|_]{2}([^\n]+)[(\*|_]{2}/;

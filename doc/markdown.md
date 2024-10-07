@@ -17,8 +17,8 @@
 - [x] Nonordered sub list
 - [ ] Local images (Not compatible yet)
 - [ ] External images (Not compatible yet)
-- [ ] Internal links (not detected yet, must be open directly on soft)
-- [ ] External links (must be open with warning)
+- [x] Internal links
+- [x] External links
 - [ ] Code (Not compatible yet)
 - [ ] Horizontal rules (Not compatible yet)
 - [ ] Formatting url and mail (Not compatible yet)

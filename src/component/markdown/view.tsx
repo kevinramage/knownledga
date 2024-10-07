@@ -50,7 +50,7 @@ export function MarkdownView(props: IMarkdownViewProps) {
             )}
             { isRendererDisplay && (
             <Panel className="panel">
-                <MarkdownRendererView content={content} />
+                <MarkdownRendererView content={content} eventManager={eventManager} />
             </Panel>
             )}
         </PanelGroup>
