@@ -15,7 +15,7 @@ export interface IMarkdownViewProps {
 export function MarkdownView(props: IMarkdownViewProps) {
     const { document, eventManager } = props;
     const [ content, setContent ] = useState(document.content);
-    const [ values, setValues ] = useState(["EDITOR", "RENDERER"]);
+    const [ values, setValues ] = useState(["RAW", "RENDERER"]);
     const isEditorDisplay = values.includes("EDITOR");
     const isRawViewDisplay = values.includes("RAW");
     const isRendererDisplay = values.includes("RENDERER");
@@ -34,7 +34,7 @@ export function MarkdownView(props: IMarkdownViewProps) {
         <PanelGroup direction="horizontal">
             { isEditorDisplay && (
             <>
-            <Panel className="panel panelWithoutFlex">
+            <Panel id="panelMdEditor" order={1} className="panel panelWithoutFlex">
                 <MarkdownEditor doc={document} content={content} setContent={setContent} eventManager={eventManager} />
             </Panel>
             <PanelResizeHandle className='panelResize' />
@@ -42,14 +42,14 @@ export function MarkdownView(props: IMarkdownViewProps) {
             )}
             { isRawViewDisplay && (
             <>
-            <Panel className="panel">
+            <Panel id="panelMdRaw" order={2} className="panel">
                 <RawEditor document={document} content={content} setContent={setContent} eventManager={eventManager} />
             </Panel>
             <PanelResizeHandle className='panelResize' />
             </>
             )}
             { isRendererDisplay && (
-            <Panel className="panel">
+            <Panel id="panelMdRender" order={3} className="panel">
                 <MarkdownRendererView content={content} eventManager={eventManager} />
             </Panel>
             )}
