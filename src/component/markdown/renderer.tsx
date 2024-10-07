@@ -72,17 +72,17 @@ function renderInline(inlineTokens: IMarkdownToken[]) {
 
 function renderTitle(block: IMarkdownHeadingToken) {
     if (block.level === 1) {
-        return (<h1 key={block.id}>{block.tokens}</h1>)
+        return (<h1 key={block.id}>{renderInline(block.tokens)}</h1>)
     } else if (block.level === 2) {
-        return (<h2 key={block.id}>{block.tokens}</h2>)
+        return (<h2 key={block.id}>{renderInline(block.tokens)}</h2>)
     } else if (block.level === 3) {
-        return (<h3 key={block.id}>{block.tokens}</h3>)
+        return (<h3 key={block.id}>{renderInline(block.tokens)}</h3>)
     } else if (block.level === 4) {
-        return (<h4 key={block.id}>{block.tokens}</h4>)
+        return (<h4 key={block.id}>{renderInline(block.tokens)}</h4>)
     } else if (block.level === 5) {
-        return (<h5 key={block.id}>{block.tokens}</h5>)
+        return (<h5 key={block.id}>{renderInline(block.tokens)}</h5>)
     } else if (block.level === 6) {
-        return (<h6 key={block.id}>{block.tokens}</h6>)
+        return (<h6 key={block.id}>{renderInline(block.tokens)}</h6>)
     } else {
         console.error("Invalid title block: ", block);
         return (<></>)

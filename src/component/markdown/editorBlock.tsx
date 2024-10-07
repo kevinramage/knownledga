@@ -79,5 +79,11 @@ function getBlockFromParagraph(token: IMarkdownParagraph) {
     }
 }
 function getBlockFromHeading(token: IMarkdownHeadingToken) {
-    return { id: v4(), type: "TITLE", text: token.tokens, lineNumber: 0 } as ITextEditorBlock;
+    if (token.tokens && token.tokens.length === 1 && token.tokens[0].type === "Text") {
+        const text = (token.tokens[0] as IMarkdownInlineText).text;
+        return { id: v4(), type: "TITLE", text: text, lineNumber: 0 } as ITextEditorBlock;
+    } else {
+        console.error("getBlockFromHeading - Unknown token: ", token);
+        return null;
+    }
 }

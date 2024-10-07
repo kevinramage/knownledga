@@ -110,7 +110,8 @@ export class MarkdownLexer {
     private generateHeadingToken(text: string) : IMarkdownHeadingToken | null {
         const match = headingRegex.exec(text);
         if (match) {
-            return { id: v4() ,type: "Heading", raw: match[0], level: match[1].length, tokens: match[2].trim() }
+            const tokens = this.parseInline(match[2].trim());
+            return { id: v4() ,type: "Heading", raw: match[0], level: match[1].length, tokens: tokens }
         } else {
             return null;
         }
@@ -310,7 +311,7 @@ export interface IMarkdownSpaceToken extends IMarkdownToken {
 }
 export interface IMarkdownHeadingToken extends IMarkdownToken {
     level: number;
-    tokens: string;
+    tokens: IMarkdownToken[];
 }
 
 export interface IMarkdownUnorderedListToken extends IMarkdownToken {

@@ -1,7 +1,7 @@
 # Markdown support
 
 - [x] Paragraph
-- [ ] Heading (Partial not compatible with inline tokens)
+- [w] Heading
 - [ ] Alternative heading syntax (Not compatible yet)
 - [ ] Paragraph line break (Not yell managed yet)
 - [x] Bold syntax with *
@@ -17,8 +17,8 @@
 - [ ] Nonordered sub list (Not compatible yet)
 - [ ] Local images (Not compatible yet)
 - [ ] External images (Not compatible yet)
-- [ ] Internal links (Not compatible yet)
-- [ ] External links (Not compatible yet)
+- [ ] Internal links (not detected yet, must be open directly on soft)
+- [ ] External links (must be open with warning)
 - [ ] Code (Not compatible yet)
 - [ ] Horizontal rules (Not compatible yet)
 - [ ] Formatting url and mail (Not compatible yet)
