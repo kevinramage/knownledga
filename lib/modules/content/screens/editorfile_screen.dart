@@ -32,8 +32,8 @@ class _EditorFileScreen extends State<EditorFileScreen> {
   @override
   void didUpdateWidget(covariant EditorFileScreen oldWidget) {
     final newElt = widget.activeElement;
-    final oldElt = oldWidget.activeElement;
-    if (newElt != null && oldElt == null ) {
+    //final oldElt = oldWidget.activeElement;
+    if (newElt != null ) {
       setState(() { content = newElt.content; });
     }
     super.didUpdateWidget(oldWidget);

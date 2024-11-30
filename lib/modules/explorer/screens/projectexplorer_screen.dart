@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/modules/explorer/models/project.dart';
-import 'package:knownledga/modules/explorer/models/projectelement.dart';
 import 'package:knownledga/modules/explorer/screens/elementexplorer_screen.dart';
 import 'package:knownledga/utils/services/api.dart';
 
@@ -28,9 +27,9 @@ class ProjectExplorerScreen extends StatelessWidget {
             }),
             const PopupMenuDivider(),
             PopupMenuItem(enabled: false, child: const Text("Create folder"), onTap: () {
-              final elt = ProjectElement(type: ProjectElement.typeFolder, name: "New Folder 1", project: project);
-              project.elements.add(elt);
-              api.project.updateProject();
+              //final elt = ProjectElement(type: ProjectElement.typeFolder, name: "New Folder 1", project: project);
+              //project.elements.add(elt);
+              //api.project.updateProject();
             }),
             PopupMenuItem(child: const Text("Create file"), onTap: () {
               final eltName = api.project.getValidElementName(project);

@@ -2,6 +2,7 @@ class ApplicationLog {
   static const logLevelError = "ERROR";
   static const logLevelWarn = "WARN";
   static const logLevelInfo = "INFO";
+  static const logLevelDebug = "DEBUG";
 
   DateTime date;
   String level;

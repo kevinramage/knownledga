@@ -9,7 +9,14 @@ class ContentLogScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: logs.map((l) { return buildLog(l); }).toList() );
+    return Scrollbar(
+      thumbVisibility: true,
+      scrollbarOrientation: ScrollbarOrientation.right, 
+      child: ListView(
+        primary: true,
+        children: logs.map((l) => buildLog(l)).toList(),
+      )
+    );
   }
 
   Row buildLog(ApplicationLog log) {
@@ -27,6 +34,8 @@ class ContentLogScreen extends StatelessWidget {
       return const Text("ERROR", style: TextStyle(color: Colors.red, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
     } else if (log.level == ApplicationLog.logLevelWarn) {
       return const Text("WARN", style: TextStyle(color: Colors.deepOrange, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
+    } else if (log.level == ApplicationLog.logLevelDebug) {
+      return const Text("DEBUG", style: TextStyle(color: Colors.grey, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
     } else {
       return const Text("INFO", style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
     }

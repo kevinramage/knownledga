@@ -1,12 +1,14 @@
+/*
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:knownledga/modules/content/models/log.dart';
-import 'package:knownledga/modules/explorer/models/project.dart';
 import 'package:knownledga/modules/explorer/models/projectelement.dart';
-import 'package:knownledga/utils/services/api.dart';
 import 'package:path/path.dart';
+*/
+
+import 'package:knownledga/modules/explorer/models/project.dart';
+import 'package:knownledga/utils/services/api.dart';
 
 class ProjectApi {
   Api? api;
@@ -34,11 +36,16 @@ class ProjectApi {
       func(projects);
     }
   }
+
+  /*
   void _createProjectUpdateState(Project project) {
     final projects = getAllProjects();
     projects.add(project);
     setProjects(projects.toList());
   }
+  */
+
+  /*
   Future createProject(String projectName) async {
 
     // Add log
@@ -75,12 +82,16 @@ class ProjectApi {
   void updateProject() {
     final projects = getAllProjects();
     setProjects(projects.toList());
-  }
+  }*/
 
+  /*
   _deleteProjectUpdateState(List<Project> projects, String projectName) {
     projects.removeWhere((p) => p.name == projectName);
     setProjects(projects.toList());
   }
+  */
+
+  /*
   deleteProject(String projectName) async {
 
     // Add log
@@ -102,6 +113,9 @@ class ProjectApi {
       throw "Invalid platform";
     }
   }
+  */
+
+  /*
   bool isValidProjectName(String projectName) {
     final projects = getAllProjects();
     final pjs = projects.where((p) => p.name == projectName);
@@ -131,12 +145,17 @@ class ProjectApi {
       return _getValidElementName(project, counter + 1);
     } 
   }
+  */
 
+  /*
   _createFileUpdateState(Project project, ProjectElement elt) {
     final projects = getAllProjects();
     project.elements.add(elt);
     setProjects(projects);
   }
+  */
+
+  /*
   createFile(Project project, String fileName) async {
     final elt = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: project);
 
@@ -155,13 +174,17 @@ class ProjectApi {
       _createFileUpdateState(project, elt);
     }
   }
+  */
 
+  /*
   _deleteFileUpdateState(Project project, ProjectElement elt) {
     final projects = getAllProjects();
     project.elements.remove(elt);
     setProjects(projects);
   }
+  */
 
+  /*
   deleteFile(Project project, ProjectElement elt) async {
 
     // Web
@@ -173,7 +196,9 @@ class ProjectApi {
       await File(elt.path).delete();
     }
   }
+  */
 
+  /*
   openFile(ProjectElement element) async {
     final applicationApi = api;
     if (applicationApi == null) {
@@ -196,7 +221,9 @@ class ProjectApi {
       applicationApi.content.openFile(element);
     }
   }
+  */
 
+  /*
   saveFile(ProjectElement element, String content) async {
     element.content = content;
 
@@ -208,12 +235,16 @@ class ProjectApi {
       await File(element.path).writeAsString(element.content);
     }
   }
+  */
 
+  /*
   refreshState() {
     final projects = getAllProjects();
     setProjects(projects.toList());
   }
+  */
 
+  /*
   renameFile(ProjectElement elt, String newName) async {
     final applicationApi = api;
     if (applicationApi == null) { throw "Invalid API"; } 
@@ -245,7 +276,9 @@ class ProjectApi {
       }
     }
   }
+  */
 
+  /*
   Future<List<Project>> loadProjects() {
     final completer = Completer<List<Project>>();
     List<Project> projects = [];
@@ -281,7 +314,7 @@ class ProjectApi {
             logApplication.log.addLog(ApplicationLog.logLevelInfo, "Project", "${projects.length} projects loaded");
           }
           completer.complete(projects);
-        },);
+        });
 
       } else {
         completer.completeError(ErrorSummary("Invalid platform"));
@@ -293,4 +326,5 @@ class ProjectApi {
 
     return completer.future;
   }
+  */
 }

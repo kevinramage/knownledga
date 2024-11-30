@@ -50,8 +50,8 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
               const PopupMenuItem(child: Text("Open")),
               const PopupMenuItem(child: Text("Renaming")),
               PopupMenuItem(child: const Text("Delete"), onTap: () {
-                widget.project.elements.removeWhere((e) => e.name == widget.element.name);
-                widget.api.project.updateProject();
+                //widget.project.elements.removeWhere((e) => e.name == widget.element.name);
+                //widget.api.project.updateProject();
               })
             ];
           })
