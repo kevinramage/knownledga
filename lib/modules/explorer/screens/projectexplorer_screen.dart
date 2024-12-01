@@ -26,10 +26,9 @@ class ProjectExplorerScreen extends StatelessWidget {
               api.project.deleteProject(project.name);
             }),
             const PopupMenuDivider(),
-            PopupMenuItem(enabled: false, child: const Text("Create folder"), onTap: () {
-              //final elt = ProjectElement(type: ProjectElement.typeFolder, name: "New Folder 1", project: project);
-              //project.elements.add(elt);
-              //api.project.updateProject();
+            PopupMenuItem(child: const Text("Create folder"), onTap: () {
+              final folderName = api.project.getValidFolderName(project);
+              api.project.createFolder(project, folderName);
             }),
             PopupMenuItem(child: const Text("Create file"), onTap: () {
               final eltName = api.project.getValidElementName(project);

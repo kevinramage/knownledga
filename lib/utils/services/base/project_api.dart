@@ -54,18 +54,46 @@ abstract class BaseProjectApi {
       return _getValidProjectNameCounter(counter + 1);
     }
   }
-  bool isValidElementName(Project project, String elementName) {
-    final elt = project.elements.where((e) => e.name == elementName);
-    return elt.isEmpty;
+  bool isValidElementName(ParentElement parent, String elementName) {
+    Iterable<ProjectElement> elts;
+    if (parent is Project) {
+      elts = parent.elements.where((e) => e.name == elementName);
+    } else if (parent is ProjectElement) {
+      elts = parent.subElements.where((e) => e.name == elementName); 
+    } else {
+      throw ErrorDescription("isValidElementName - Invalid parent instance");
+    }
+    return elts.isEmpty;
   }
-  String getValidElementName(Project project) {
-    return _getValidElementName(project, 1);
+  String getValidElementName(ParentElement parent) {
+    return _getValidElementName(parent, 1);
   }
-  String _getValidElementName(Project project, int counter) {
-    if (isValidElementName(project, "New file $counter.md")) {
+  String _getValidElementName(ParentElement parent, int counter) {
+    if (isValidElementName(parent, "New file $counter.md")) {
       return "New file $counter.md";
     } else {
-      return _getValidElementName(project, counter + 1);
+      return _getValidElementName(parent, counter + 1);
+    } 
+  }
+  bool isValidFolderName(ParentElement parent, String folderName) {
+    Iterable<ProjectElement> elts;
+    if (parent is Project) {
+      elts = parent.elements.where((e) => e.name == folderName);
+    } else if (parent is ProjectElement) {
+      elts = parent.subElements.where((e) => e.name == folderName);
+    } else {
+      throw ErrorDescription("IsValidFolderName - Invalid parent instance");
+    }
+    return elts.isEmpty;
+  }
+  String getValidFolderName(ParentElement parent) {
+    return _getValidFoldertName(parent, 1);
+  }
+  String _getValidFoldertName(ParentElement parent, int counter) {
+    if (isValidFolderName(parent, "New folder $counter")) {
+      return "New folder $counter";
+    } else {
+      return _getValidFoldertName(parent, counter + 1);
     } 
   }
 
@@ -81,15 +109,28 @@ abstract class BaseProjectApi {
     setProjects(projects.toList());
   }
 
-  void addEltInProject(Project project, ProjectElement element) {
+  void addEltToParent(ParentElement parent, ProjectElement element) {
     final projects = getAllProjects();
-    project.elements.add(element);
+    if (parent is Project) {
+      element.parent = parent;
+      parent.elements.add(element);
+    } else if (parent is ProjectElement) {
+      element.parent = parent;
+      parent.subElements.add(element);
+    } else {
+      throw ErrorDescription("addEltToParent - Invalid parent instance");
+    }
+    sortElements(projects);
     setProjects(projects.toList());
   }
 
-  void deleteEltFromProject(Project project, ProjectElement element) {
+  void deleteEltFromParent(ParentElement parent, ProjectElement element) {
     final projects = getAllProjects();
-    project.elements.remove(element);
+    if (parent is Project) {
+      parent.elements.remove(element);
+    } else if (parent is ProjectElement) {
+      parent.subElements.remove(element);
+    }
     setProjects(projects.toList());
   }
 
@@ -117,10 +158,24 @@ abstract class BaseProjectApi {
     }
   }
 
+  sortElements(List<Project> projects) {
+    for (int i = 0; i < projects.length; i++) {
+      sortSubElements(projects[i].elements);
+    }
+  }
+
+  sortSubElements(List<ProjectElement> elts) {
+    elts.sort(ProjectElement.compareTo);
+    for (int i = 0; i < elts.length; i++) {
+      sortSubElements(elts[i].subElements);
+    }
+  }
+
   void createProject(String projectName);
   void deleteProject(String projectName);
-  void createFile(Project project, String fileName);
-  void deleteFile(Project project, ProjectElement element);
+  void createFile(ParentElement parent, String fileName);
+  void createFolder(ParentElement parent, String directoryName);
+  void deleteFile(ProjectElement element);
   void openFile(ProjectElement element);
   void saveFile(ProjectElement element, String content);
   void renameFile(ProjectElement element, String newName);

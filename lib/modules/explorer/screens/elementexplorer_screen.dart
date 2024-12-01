@@ -34,25 +34,34 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
   }
 
   Widget buildFolder() {
-    List<Widget> subElts = [];
+    List<Widget> subElts = widget.element.subElements.map((e) => ElementExplorerScreen(api: widget.api, project: widget.project, element: e)).toList();
     Widget eltWidget = Text(widget.element.name, style: const TextStyle(color: Colors.white, fontSize: 14));
     if (renaming) {
       eltWidget = TextField(autofocus: true, controller: TextEditingController(text: renameFileName));
     }
     return Padding(
-      padding: const EdgeInsets.only(left: 5, top: 0),
+      padding: const EdgeInsets.only(left: 10, top: 0),
       child: ExpansionTile(
+        initiallyExpanded: true,
         title: Row(children: [
           eltWidget,
           const Expanded(child: Text("")),
           PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
             return <PopupMenuEntry>[
-              const PopupMenuItem(child: Text("Open")),
-              const PopupMenuItem(child: Text("Renaming")),
+              const PopupMenuItem(enabled: false, child: Text("Open")),
+              const PopupMenuItem(enabled: false, child: Text("Renaming")),
               PopupMenuItem(child: const Text("Delete"), onTap: () {
-                //widget.project.elements.removeWhere((e) => e.name == widget.element.name);
-                //widget.api.project.updateProject();
-              })
+                widget.api.project.deleteFile(widget.element);
+              }),
+              const PopupMenuDivider(),
+              PopupMenuItem(child: const Text("Create folder"), onTap: () {
+                final folderName = widget.api.project.getValidFolderName(widget.element);
+                widget.api.project.createFolder(widget.element, folderName);
+              }),
+              PopupMenuItem(child: const Text("Create file"), onTap: () {
+                final folderName = widget.api.project.getValidElementName(widget.element);
+                widget.api.project.createFile(widget.element, folderName);
+              }),
             ];
           })
         ]),
@@ -106,7 +115,7 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
                 });
               }),
               PopupMenuItem(child: const Text("Delete"), onTap: () {
-                widget.api.project.deleteFile(widget.project, widget.element);
+                widget.api.project.deleteFile(widget.element);
               })
             ];
           })

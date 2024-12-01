@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:knownledga/modules/content/models/log.dart';
 import 'package:knownledga/modules/explorer/models/project.dart';
 import 'package:knownledga/modules/explorer/models/projectelement.dart';
@@ -19,16 +20,41 @@ class WebProjectApi extends BaseProjectApi {
   }
 
   @override
-  void createFile(Project project, String fileName) {
+  void createFile(ParentElement parent, String fileName) {
     addLog(ApplicationLog.logLevelDebug, "Project", "Create file '$fileName'");
-    final element = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: project);
-    addEltInProject(project, element);
+    ProjectElement element;
+    if (parent is Project) {
+      element = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: parent);
+    } else if (parent is ProjectElement) {
+      element = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: parent.project);
+    } else {
+      throw ErrorDescription("createFile - Invalid parent instance");
+    }
+    addEltToParent(parent, element);
   }
 
   @override
-  void deleteFile(Project project, ProjectElement element) {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Delete file '${element.name}'");
-    deleteEltFromProject(project, element);
+  void createFolder(ParentElement parent, String directoryName) {
+    addLog(ApplicationLog.logLevelDebug, "Project", "Create folder '$directoryName'");
+    ProjectElement element;
+    if (parent is Project) {
+      element = ProjectElement(type: ProjectElement.typeFolder, name: directoryName, project: parent);
+    } else if (parent is ProjectElement) {
+      element = ProjectElement(type: ProjectElement.typeFolder, name: directoryName, project: parent.project);
+    } else {
+      throw ErrorDescription("createFolder - Invalid parent instance");
+    }
+    addEltToParent(parent, element);
+  }
+
+  @override
+  void deleteFile(ProjectElement element) {
+    addLog(ApplicationLog.logLevelDebug, "Project", "Delete element '${element.name}'");
+    if (element.parent != null) {
+      deleteEltFromParent(element.parent as ParentElement, element);
+    } else {
+      throw ErrorDescription("DeleteFile - Invalid parent element");
+    }
   }
 
   @override
