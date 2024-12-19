@@ -83,7 +83,9 @@ class WebProjectApi extends BaseProjectApi {
     addLog(ApplicationLog.logLevelDebug, "Project", "Load projects");
     await Future.delayed(const Duration(seconds: 5));
     List<Project> projects = [];
-    projects.add(Project(name: "New pj"));
+    final project = Project(name: "New pj");
+    project.isCreating = false;
+    projects.add(project);
     return projects;
   }
 }

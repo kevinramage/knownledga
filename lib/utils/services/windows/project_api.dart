@@ -179,6 +179,7 @@ class WindowsProjectApi extends BaseProjectApi {
 
   void readProjectFromDirectory(List<Project> projects, String path, FileSystemEntity file) {
     final project = Project(name: basename(file.path));
+    project.isCreating = false;
     project.path = file.path;
     projects.add(project);
   }

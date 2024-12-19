@@ -43,7 +43,8 @@ class _ExplorerScreen extends State<ExplorerScreen> {
           return [
               PopupMenuItem(child: const Text("Create new project"), onTap: () {
                 final projectName = widget.api.project.getValidProjectName();
-                widget.api.project.createProject(projectName);
+                //widget.api.project.createProject(projectName);
+                widget.api.project.prepareProjectCreation(projectName);
               })
           ];
         })

@@ -99,6 +99,13 @@ abstract class BaseProjectApi {
 
   void addProjectInProjectList(Project project) {
     final projects = getAllProjects();
+    project.isCreating = false;
+    setProjects(projects.toList());
+  }
+
+  void prepareProjectCreation(String projectName) {
+    final projects = getAllProjects();
+    final project = Project(name: projectName);
     projects.add(project);
     setProjects(projects.toList());
   }
