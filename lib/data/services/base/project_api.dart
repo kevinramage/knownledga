@@ -188,5 +188,6 @@ abstract class BaseProjectApi {
   void saveFile(ProjectElement element, String content);
   void renameFile(ProjectElement element, String newName);
   Future<List<Project>> loadProjects();
+  String getHomeDirectory();
 }
 

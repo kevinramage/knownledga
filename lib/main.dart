@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/services/api.dart';
+import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
 import 'package:knownledga/ui/application/widgets/application_screen.dart';
 
 void main() {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: Scaffold(
-        body: ApplicationScreen()
+        body: ApplicationScreen(viewModel: ApplicationViewModel(api: Api()))
       )
     );
   }

@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
 import 'package:knownledga/ui/content/widgets/content_screen.dart';
+import 'package:knownledga/ui/explorer/view_models/explorer_modelView.dart';
 import 'package:knownledga/ui/explorer/widgets/explorer_screen.dart';
-import 'package:knownledga/data/services/api.dart';
 
 class ApplicationScreen extends StatelessWidget {
 
-  final Api api = Api.init();
+  final ApplicationViewModel _viewModel;
   
-  ApplicationScreen({super.key});
+  const ApplicationScreen({super.key, required ApplicationViewModel viewModel}) : _viewModel = viewModel;
 
   @override
   Widget build(BuildContext context) {
-    return Row(children: [
-      ExplorerScreen(api: api),
-      ContentScreen(api: api)
-    ]);
+    return ListenableBuilder(listenable: _viewModel, builder: (context, child) {
+      return Row(children: [
+        ExplorerScreen(explorer: ExplorerModelView(application: _viewModel)),
+        ContentScreen(api: _viewModel.api)
+      ]);
+    });
   }
 }

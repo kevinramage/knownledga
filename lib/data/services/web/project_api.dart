@@ -89,4 +89,9 @@ class WebProjectApi extends BaseProjectApi {
     projects.add(project);
     return projects;
   }
+
+  @override
+  String getHomeDirectory() {
+    return "C:\\Project";
+  }
 }

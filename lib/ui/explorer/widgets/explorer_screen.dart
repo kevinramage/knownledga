@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
+import 'package:knownledga/ui/dialog/widgets/create_project_screen.dart';
+import 'package:knownledga/ui/explorer/view_models/explorer_modelView.dart';
 import 'package:knownledga/ui/explorer/widgets/project_screen.dart';
-import 'package:knownledga/data/services/api.dart';
 
 class ExplorerScreen extends StatefulWidget {
 
-  final Api api;
+  final ExplorerModelView _modelView;
 
-  const ExplorerScreen({super.key, required this.api});
+  const ExplorerScreen({super.key, required ExplorerModelView explorer}) : _modelView = explorer;
 
   @override
   State<StatefulWidget> createState() {
@@ -17,39 +18,55 @@ class ExplorerScreen extends StatefulWidget {
 
 class _ExplorerScreen extends State<ExplorerScreen> {
 
-  List<Project> projects = [];
-
   @override
   void initState() {
     super.initState();
-    widget.api.project.registerGetProjects(() { return projects; });
-    widget.api.project.registerSetProjects((pjs) { setState(() { projects = pjs; }); });
+    final pj = Project(name: "Test2");
+    widget._modelView.addProject(pj);
+    //widget._explorerModelView.getApi();
+    //widget._explorerModelView.getApi().project.registerGetProjects(() { return _model.projects; });
+    //widget.api.project.registerSetProjects((pjs) { setState(() { _model.projects = pjs; }); });
 
     // Load project
+    /*
     widget.api.project.loadProjects().then((pjs) {
-      setState(() { projects = pjs; });
+      setState(() { _model.projects = pjs; });
     });
+    */
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(width: 350, height: double.infinity, color: Colors.grey.shade700,
-    child: Column(children: [
-      Container(decoration: const BoxDecoration(border: BorderDirectional(bottom: BorderSide(color: Colors.white54))), 
-      child: Padding(padding: const EdgeInsets.all(10), child: Row(children: [
-        const Text("Explorer", textAlign: TextAlign.left, style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 16)),
-        const Expanded(child: Text("")),
-        PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
-          return [
-              PopupMenuItem(child: const Text("Create new project"), onTap: () {
-                final projectName = widget.api.project.getValidProjectName();
-                //widget.api.project.createProject(projectName);
-                widget.api.project.prepareProjectCreation(projectName);
-              })
-          ];
-        })
-      ]))),
-      Expanded(child: ListView(children: projects.map((p) { return ProjectExplorerScreen(api: widget.api, project: p); }).toList()))
-    ]));
+    return ListenableBuilder(listenable: widget._modelView, builder: (context, builder) {
+      return Container(width: 350, height: double.infinity, color: Colors.grey.shade700,
+        child: Column(children: [
+          Container(decoration: const BoxDecoration(border: BorderDirectional(bottom: BorderSide(color: Colors.white54))), 
+          child: Padding(padding: const EdgeInsets.all(10), child: Row(children: [
+            const Text("Explorer", textAlign: TextAlign.left, style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 16)),
+            const Expanded(child: Text("")),
+            _buildProjectPopupMenuItem()
+          ]))),
+          _buildProjects()
+      ]));
+    });
+  }
+
+  Widget _buildProjectPopupMenuItem() {
+    return PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
+      return [
+          PopupMenuItem(child: const Text("Create new project"), onTap: () async {
+            final applicationViewModel = widget._modelView.applicationViewModel;
+            final projectViewModel = await DialogCreateProjectScreen().show(context, applicationViewModel);
+            final project = Project(name: projectViewModel.projectName);
+            widget._modelView.addProject(project);
+          })
+      ];
+    });
+  }
+
+  Widget _buildProjects() {
+    return Expanded(child: ListView(children: widget._modelView.projects.map((p) { 
+      return ProjectExplorerScreen(api: widget._modelView.api, project: p); 
+    }).toList()));
   }
 }

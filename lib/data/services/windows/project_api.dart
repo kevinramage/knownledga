@@ -210,4 +210,18 @@ class WindowsProjectApi extends BaseProjectApi {
     }
     return allElements;
   }
+
+  @override
+  String getHomeDirectory() {
+    String home = "";
+    Map<String, String> envVars = Platform.environment;
+    if (Platform.isMacOS) {
+      home = envVars['HOME'] as String;
+    } else if (Platform.isLinux) {
+      home = envVars['HOME'] as String;
+    } else if (Platform.isWindows) {
+      home = envVars['UserProfile'] as String;
+    }
+    return home;
+  }
 }
