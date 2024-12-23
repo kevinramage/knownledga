@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/ui/content/view_models/content_viewmodel.dart';
 import 'package:knownledga/ui/content/widgets/editor_screen.dart';
-import 'package:knownledga/ui/content/widgets/informations_screen.dart';
-import 'package:knownledga/data/services/api.dart';
 
 class ContentScreen extends StatelessWidget {
 
-  final Api api;
+  final ContentViewModel _contentViewModel; 
+  //final Api api;
 
-  const ContentScreen({super.key, required this.api});
+  const ContentScreen({super.key, required ContentViewModel contentViewModel}) : _contentViewModel = contentViewModel;
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +16,8 @@ class ContentScreen extends StatelessWidget {
       height: double.infinity, 
       color: Colors.grey.shade700,
       child: Column(children: [
-        ContentEditorScreen(api: api),
-        ContentInformationsScreen(api: api)
+        ContentEditorScreen(editorViewModel: _contentViewModel.editorViewModel),
+        //ContentInformationsScreen(api: api)
       ])
     ));
   }

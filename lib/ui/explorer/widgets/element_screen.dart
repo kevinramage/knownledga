@@ -35,6 +35,7 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
         title: _buildChildTextElement(elementViewModel),
         isExpandable: false,
         commands: [
+          _openElementBtn(elementViewModel),
           _renameElementBtn(elementViewModel),
           _deleteElementBtn(elementViewModel)
         ],
@@ -65,6 +66,16 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
         style: const TextStyle(fontSize: 12, color: Colors.white, decoration: TextDecoration.none)
       );
     }
+  }
+
+  Widget _openElementBtn(ElementViewModel element) {
+    return IconButton(
+      onPressed: () {
+        element.openElement();
+      }, 
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.launch, size: 15, color: Colors.white)
+    );
   }
 
   Widget _renameElementBtn(ElementViewModel element) {

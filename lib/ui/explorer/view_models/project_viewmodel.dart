@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
-import 'package:knownledga/data/services/api.dart';
 import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
 import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
 
@@ -15,13 +14,15 @@ class ProjectViewModel with ChangeNotifier {
 
   ProjectViewModel({ required ApplicationViewModel applicationViewModel, required Project project}) : 
     _applicationViewModel = applicationViewModel, 
-    _project = project;
+    _project = project {
+      _projectElements = project.elements.map((e) => ElementViewModel(projectViewModel: this, element: e)).toList();
+    }
 
   addBuildingElement() {
     //final element = ProjectElement(type: ProjectElement.typeFile, name: "Element1", project: _project);
     //_buildingElement = ElementViewModel(projectViewModel: this, element: element);
     //_buildingElement!.isBuilt = true;
-    final element = ProjectElement(type: ProjectElement.typeFile, name: "Element1.md", project: _project);
+    final element = ProjectElement(type: ProjectElement.typeFile, name: "Element1.md");
     final elementViewModel = ElementViewModel(projectViewModel: this, element: element);
     _projectElements.add(elementViewModel);
     _projectExpanded = true;
@@ -46,8 +47,8 @@ class ProjectViewModel with ChangeNotifier {
     return _project;
   }
 
-  Api get api {
-    return _applicationViewModel.api;
+  ApplicationViewModel get applicationViewModel {
+    return _applicationViewModel;
   }
 
   List<ElementViewModel> get elements {

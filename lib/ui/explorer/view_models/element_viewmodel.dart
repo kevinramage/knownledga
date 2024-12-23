@@ -19,6 +19,11 @@ class ElementViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> openElement() async {
+    await Future.delayed(const Duration(seconds: 1));
+    projectViewModel.applicationViewModel.openElement(this);
+  }
+
   cancelRenaming() {
     _isRenaming = false;
     notifyListeners();

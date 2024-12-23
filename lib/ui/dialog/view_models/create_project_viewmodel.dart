@@ -17,7 +17,7 @@ class CreateProjectViewModel extends ChangeNotifier {
   bool _isValidProjectLocation = false;
   
   CreateProjectViewModel({required ApplicationViewModel application}) : _applicationViewModel = application {
-    applicationHome = application.homeDirectory;
+    applicationHome = application.getHomeDirectory();
   }
 
   ProjectViewModel toProjectViewModel(ApplicationViewModel applicationViewModel) {

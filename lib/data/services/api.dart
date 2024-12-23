@@ -5,7 +5,6 @@ import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/services/content_api.dart';
 import 'package:knownledga/data/services/log_api.dart';
 import 'package:knownledga/data/services/web/project_api.dart';
-import 'package:knownledga/data/services/windows/project_api.dart';
 
 class Api {
   BaseProjectApi project = WebProjectApi();
@@ -16,9 +15,9 @@ class Api {
 
   initialize() {
     if (!kIsWeb && Platform.isWindows) {
-      project = WindowsProjectApi();
+      //project = WindowsProjectApi();
     }
-    project.api = this;
+    //project.api = this;
   }
 
   factory Api.init() {

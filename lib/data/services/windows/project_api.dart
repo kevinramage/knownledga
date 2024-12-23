@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:knownledga/data/repositories/explorer/parent_element.dart';
-import 'package:knownledga/data/repositories/core/log.dart';
 import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
@@ -12,6 +9,7 @@ import 'package:path/path.dart' as path;
 
 class WindowsProjectApi extends BaseProjectApi {
 
+  /*
   @override
   createProject(String projectName) async {
     addLog(ApplicationLog.logLevelInfo, "Project", "Create project '$projectName'");
@@ -26,7 +24,9 @@ class WindowsProjectApi extends BaseProjectApi {
     // Update state
     addProjectInProjectList(project);
   }
+  */
 
+  /*
   @override
   void deleteProject(String projectName) async {
     addLog(ApplicationLog.logLevelInfo, "Project", "Delete project '$projectName'");
@@ -41,7 +41,9 @@ class WindowsProjectApi extends BaseProjectApi {
       addLog(ApplicationLog.logLevelError, "Project", "Impossible to find project $projectName");
     }
   }
+  */
 
+  /*
   @override
   createFile(ParentElement parent, String fileName) async {
     addLog(ApplicationLog.logLevelDebug, "Project", "Create file '$fileName'");
@@ -58,7 +60,9 @@ class WindowsProjectApi extends BaseProjectApi {
     await File(element.path).create();
     addEltToParent(parent, element);
   }
+  */
 
+  /*
   @override
   void createFolder(ParentElement parent, String directoryName) async {
     addLog(ApplicationLog.logLevelDebug, "Project", "Create folder '$directoryName'");
@@ -75,35 +79,31 @@ class WindowsProjectApi extends BaseProjectApi {
     await Directory(element.path).create();
     addEltToParent(parent, element);
   }
+  */
 
   @override
-  void deleteFile(ProjectElement element) async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Delete element '${element.name}'");
+  Future<void> deleteElement(ProjectElement element) async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Delete element '${element.name}'");
     await File(element.path).delete(recursive: true);
-    if (element.parent != null) {
-      deleteEltFromParent(element.parent as ParentElement, element);
-    } else {
-      throw ErrorDescription("DeleteFile - Invalid parent element");
-    }
   }
 
   @override
-  openFile(ProjectElement element) async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Open file '${element.name}'");
+  loadElement(ProjectElement element) async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Open file '${element.name}'");
     element.content = await File(element.path).readAsString();
-    setActiveElement(element);
+    return element;
   }
 
   @override
-  saveFile(ProjectElement element, String content) async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Save file '${element.name}'");
+  Future<void> saveElementContent(ProjectElement element) async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Save file '${element.name}'");
     await File(element.path).writeAsString(element.content);
   }
 
   @override
-  void renameFile(ProjectElement element, String newName) async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Rename file '${element.name}' to $newName");
-    bool isActiveElt = isActiveElement(element);
+  Future<ProjectElement> renameElement(ProjectElement element, String newName) async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Rename file '${element.name}' to $newName");
+    //bool isActiveElt = isActiveElement(element);
     String parentPath = "";
     final parent = element.parent;
     if (parent is Project) {
@@ -117,15 +117,12 @@ class WindowsProjectApi extends BaseProjectApi {
     await File(element.path).rename(newPath);
     element.name = newName;
     element.path = newPath;
-    refreshState();
-    if (isActiveElt) {
-      setActiveElement(element);
-    }
+    return element;
   }
 
   @override
-  Future<List<Project>> loadProjects() async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Load projects");
+  Future<List<Project>> loadAllProjects() async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Load projects");
     final completer = Completer<List<Project>>();
     List<Project> projects = [];
 
@@ -141,8 +138,8 @@ class WindowsProjectApi extends BaseProjectApi {
       }, onError: (err) {
         completer.completeError(err);
       }, onDone: () {
-        addLog(ApplicationLog.logLevelInfo, "Project", "${projects.length} projects loaded");
-        sortElements(projects);
+        //addLog(ApplicationLog.logLevelInfo, "Project", "${projects.length} projects loaded");
+        //sortElements(projects);
         completer.complete(projects);
       }
     );
@@ -159,20 +156,20 @@ class WindowsProjectApi extends BaseProjectApi {
       final fileType = file.statSync().type;
       final parentElement = detectParent(projects, file.parent);
       if (parentElement != null && parentElement is ProjectElement ) {
-        final elt = buildElement(parentElement.project, file, fileType);
+        final elt = buildElement(file, fileType);
         elt.parent = parentElement;
         parentElement.subElements.add(elt);
       } else if (parentElement != null && parentElement is Project) {
-        final elt = buildElement(parentElement, file, fileType);
+        final elt = buildElement(file, fileType);
         elt.parent = parentElement;
         parentElement.elements.add(elt);
       }
     }
   }
 
-  ProjectElement buildElement(Project project, FileSystemEntity file, FileSystemEntityType fileType) {
+  ProjectElement buildElement(FileSystemEntity file, FileSystemEntityType fileType) {
     final fileName = basename(file.path);
-    final elt = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: project);
+    final elt = ProjectElement(type: ProjectElement.typeFile, name: fileName);
     elt.path = file.path;
     elt.type = fileType == FileSystemEntityType.directory ? ProjectElement.typeFolder : ProjectElement.typeFile;
     return elt;
