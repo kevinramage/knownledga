@@ -30,8 +30,8 @@ class CreateProjectScreen extends StatefulWidget {
 class _CreateProjectScreen extends State<CreateProjectScreen> {
   final TextEditingController _projectNameController = TextEditingController();
   final TextEditingController _gitUrlController = TextEditingController();
-  final TextEditingController _gitUsernameController = TextEditingController();
-  final TextEditingController _gitPasswordController = TextEditingController();
+  //final TextEditingController _gitUsernameController = TextEditingController();
+  //final TextEditingController _gitPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,16 +39,16 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
     widget._model.initHomeDirectory();
     _projectNameController.text = widget._model.projectName;
     _gitUrlController.text = widget._model.gitUrl;
-    _gitUsernameController.text = widget._model.gitUsername;
-    _gitPasswordController.text = widget._model.gitPassword;
+    //_gitUsernameController.text = widget._model.gitUsername;
+    //_gitPasswordController.text = widget._model.gitPassword;
   }
 
   @override
   void dispose() {
     _projectNameController.dispose();
     _gitUrlController.dispose();
-    _gitUsernameController.dispose();
-    _gitPasswordController.dispose();
+    //_gitUsernameController.dispose();
+    //_gitPasswordController.dispose();
     super.dispose();
   }
 
@@ -71,10 +71,14 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
               const Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Divider()),
             if (widget._model.projectType == ProjectType.gitProject)
               _buildProjectGitUrl(),
+            /*
             if (widget._model.projectType == ProjectType.gitProject)
               _buildProjectGitUsername(),
+            */
+            /*
             if (widget._model.projectType == ProjectType.gitProject)
               _buildProjectGitPassword()
+            */
         
           ]))),
           actions: [
@@ -162,6 +166,7 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
     );
   }
 
+  /*
   Widget _buildProjectGitUsername() {
     return TextField(
       decoration: InputDecoration(
@@ -174,7 +179,9 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
       onChanged: (value) {  widget._model.gitUsername = value; },
     );
   }
+  */
 
+  /*
   Widget _buildProjectGitPassword() {
     return TextField(
       decoration: InputDecoration(
@@ -188,5 +195,6 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
       onChanged: (value) {  widget._model.gitPassword = value; },
     );
   }
+  */
 }
 

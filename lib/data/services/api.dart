@@ -16,7 +16,6 @@ class Api {
 
   initialize() {
     if (!kIsWeb && Platform.isWindows) {
-      print("Integrate windows API");
       project = WindowsProjectApi();
     }
     //project.api = this;

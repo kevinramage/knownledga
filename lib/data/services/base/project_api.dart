@@ -14,6 +14,7 @@ abstract class BaseProjectApi {
   Future<ProjectElement> renameElement(ProjectElement element, String newName);
   Future<void> saveElementContent(ProjectElement element);
   Future<void> deleteElement(ProjectElement element);
+  Future<void> push(Project project);
   String getHomeDirectory();
 }
 

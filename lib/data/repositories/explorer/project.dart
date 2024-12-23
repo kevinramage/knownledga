@@ -7,6 +7,7 @@ class Project extends ParentElement {
   String path = "";
   bool isCreating = true;
   List<ProjectElement> elements = [];
+  String gitUrl = "";
 
   Project({required this.name});
 }

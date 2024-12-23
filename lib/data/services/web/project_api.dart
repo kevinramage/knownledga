@@ -103,6 +103,12 @@ class WebProjectApi extends BaseProjectApi {
   }
 
   @override
+  Future<void> push(Project project) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return;
+  }
+
+  @override
   String getHomeDirectory() {
     return "C:\\Knownledga";
   }

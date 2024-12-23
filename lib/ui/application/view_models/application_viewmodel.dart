@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knownledga/data/repositories/explorer/project_element.dart';
 import 'package:knownledga/data/services/api.dart';
 import 'package:knownledga/ui/content/view_models/content_viewmodel.dart';
 import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
@@ -42,6 +41,10 @@ class ApplicationViewModel with ChangeNotifier {
 
   Future<void> deleteElement(ElementViewModel elementViewModel) async {
     await _api.project.deleteElement(elementViewModel.element);
+  }
+
+  Future<void> push(ProjectViewModel projectViewModel) async {
+    await _api.project.push(projectViewModel.project);
   }
 
   String getHomeDirectory() {

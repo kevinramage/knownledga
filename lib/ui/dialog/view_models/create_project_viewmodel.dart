@@ -11,8 +11,8 @@ class CreateProjectViewModel extends ChangeNotifier {
   ProjectType _projectType = ProjectType.localProject;
   String _applicationHome = "";
   String _gitUrl = "";
-  String _gitUsername = "";
-  String _gitPassword = "";
+  //String _gitUsername = "";
+  //String _gitPassword = "";
   bool _isValidProjectName = true;
   bool _isValidProjectLocation = false;
   
@@ -27,6 +27,8 @@ class CreateProjectViewModel extends ChangeNotifier {
   ProjectViewModel toProjectViewModel(ApplicationViewModel applicationViewModel) {
     final Project project = Project(name: projectName);
     project.path = projectLocation;
+    project.type = projectType;
+    project.gitUrl = gitUrl;
     return ProjectViewModel(applicationViewModel: applicationViewModel, project: project);
   }
 
@@ -68,6 +70,7 @@ class CreateProjectViewModel extends ChangeNotifier {
     _gitUrl = value;
     notifyListeners();
   }
+  /*
   String get gitUsername {
     return _gitUsername;
   }
@@ -75,6 +78,8 @@ class CreateProjectViewModel extends ChangeNotifier {
     _gitUsername = value;
     notifyListeners();
   }
+  */
+  /*
   String get gitPassword {
     return _gitPassword;
   }
@@ -82,6 +87,7 @@ class CreateProjectViewModel extends ChangeNotifier {
     _gitPassword = value;
     notifyListeners();
   }
+  */
   bool get isValidProjectName {
     return _isValidProjectName;
   }
@@ -91,13 +97,17 @@ class CreateProjectViewModel extends ChangeNotifier {
   bool get isValidGitURL {
     return projectType != ProjectType.gitProject || gitUrl.isNotEmpty;
   }
+  /*
   bool get isValidGitUserName {
     return projectType != ProjectType.gitProject || gitUsername.isNotEmpty; 
   }
+  */
+  /*
   bool get isValidGitPassword {
     return projectType != ProjectType.gitProject || gitPassword.isNotEmpty;
   }
+  */
   bool get isValidProperties {
-    return isValidProjectName && isValidProjectLocation && isValidGitURL && isValidGitUserName && isValidGitPassword;
+    return isValidProjectName && isValidProjectLocation && isValidGitURL /*&& isValidGitUserName && isValidGitPassword */;
   }
 }

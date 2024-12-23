@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
+import 'package:knownledga/data/services/git_helper.dart';
 import 'package:path/path.dart';
 import 'package:path/path.dart' as path;
 
@@ -12,12 +13,27 @@ class WindowsProjectApi extends BaseProjectApi {
   @override
   Future<Project> createProject(Project project) async {
     //addLog(ApplicationLog.logLevelInfo, "Project", "Create project '$projectName'");
-    // Create directory
-    Map<String, String> envVars = Platform.environment;
-    final homeDirectory = envVars["UserProfile"];
-    project.path = path.join(homeDirectory as String, ".knownledga", "projects", project.name);
+    if (project.type == ProjectType.localProject) {
+      await _createLocalProject(project);
+    } else {
+      await _createGitProject(project);
+    }
+    return project;
+  }
+
+  _createLocalProject(Project project) async {
+    print("Create local project");
+    final homeDirectory = getHomeDirectory();
+    project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
     await Directory(project.path).create(recursive: true);
     return project;
+  }
+
+  _createGitProject(Project project) async {
+    print("Create git project");
+    final homeDirectory = getHomeDirectory();
+    project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
+    await GitHelper.clone(project.gitUrl, project.path);
   }
 
   /*
@@ -188,6 +204,13 @@ class WindowsProjectApi extends BaseProjectApi {
       allElements.addAll(elts);
     }
     return allElements;
+  }
+
+  @override
+  Future<void> push(Project project) async {
+    await GitHelper.add(project.path);
+    await GitHelper.commit(project.path);
+    await GitHelper.push(project.path);
   }
 
   @override

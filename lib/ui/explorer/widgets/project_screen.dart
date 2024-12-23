@@ -75,7 +75,9 @@ class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
 
   Widget _buildSyncBtn() {
     return IconButton(
-      onPressed: () {}, 
+      onPressed: () { 
+        widget._modelView.push(); 
+      }, 
       padding: const EdgeInsets.all(0), 
       icon: const Icon(Icons.sync, size: 15, color: Colors.white)
     );

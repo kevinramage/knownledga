@@ -45,6 +45,9 @@ class ProjectViewModel with ChangeNotifier {
   void addDirectory(ElementViewModel element) {
     _projectElements.add(element);
   }
+  Future<void> push() async {
+    await _applicationViewModel.push(this);
+  }
 
   Project get project {
     return _project;
@@ -64,6 +67,10 @@ class ProjectViewModel with ChangeNotifier {
 
   String get projectPath {
     return _project.path;
+  }
+
+  String get gitUrl {
+    return _project.gitUrl;
   }
 
   bool get projectExpanded {
