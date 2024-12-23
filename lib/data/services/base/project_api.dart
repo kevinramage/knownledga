@@ -8,6 +8,8 @@ abstract class BaseProjectApi {
    */
   Future<List<Project>> loadAllProjects();
   //Future<Project> loadProject(Project project);
+  Future<Project> createProject(Project project);
+  Future<ProjectElement> createProjectElement(ProjectElement element);
   Future<ProjectElement> loadElement(ProjectElement element);
   Future<ProjectElement> renameElement(ProjectElement element, String newName);
   Future<void> saveElementContent(ProjectElement element);

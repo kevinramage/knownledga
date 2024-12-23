@@ -18,24 +18,27 @@ class ProjectViewModel with ChangeNotifier {
       _projectElements = project.elements.map((e) => ElementViewModel(projectViewModel: this, element: e)).toList();
     }
 
-  addBuildingElement() {
+  addBuildingElement() async {
     //final element = ProjectElement(type: ProjectElement.typeFile, name: "Element1", project: _project);
     //_buildingElement = ElementViewModel(projectViewModel: this, element: element);
     //_buildingElement!.isBuilt = true;
     final element = ProjectElement(type: ProjectElement.typeFile, name: "Element1.md");
     final elementViewModel = ElementViewModel(projectViewModel: this, element: element);
-    _projectElements.add(elementViewModel);
+    elementViewModel.element.path = "$projectPath\\${elementViewModel.elementName}";
+    final newElement = await _applicationViewModel.createProjectElement(this, elementViewModel);
+    _projectElements.add(newElement);
     _projectExpanded = true;
     notifyListeners();
   }
-  Future<void> addElement(ElementViewModel element) async {
-    await Future.delayed(const Duration(seconds: 1));
-    _projectElements.add(element);
+  Future<void> addElement(ElementViewModel elementViewModel) async {
+    elementViewModel.element.path = "$projectPath\\${elementViewModel.elementName}";
+    final newElement = await _applicationViewModel.createProjectElement(this, elementViewModel);
+    _projectElements.add(newElement);
     _projectExpanded = true;
     notifyListeners();
   }
   Future<void> deleteElement(ElementViewModel element) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await _applicationViewModel.deleteElement(element);
     _projectElements = _projectElements.where((e) => e != element).toList();
     notifyListeners();
   }
@@ -57,6 +60,10 @@ class ProjectViewModel with ChangeNotifier {
 
   ElementViewModel? get builtElement {
     return _buildingElement;
+  }
+
+  String get projectPath {
+    return _project.path;
   }
 
   bool get projectExpanded {

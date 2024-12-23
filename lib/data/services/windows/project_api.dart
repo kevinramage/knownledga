@@ -9,22 +9,16 @@ import 'package:path/path.dart' as path;
 
 class WindowsProjectApi extends BaseProjectApi {
 
-  /*
   @override
-  createProject(String projectName) async {
-    addLog(ApplicationLog.logLevelInfo, "Project", "Create project '$projectName'");
-
+  Future<Project> createProject(Project project) async {
+    //addLog(ApplicationLog.logLevelInfo, "Project", "Create project '$projectName'");
     // Create directory
-    final project = Project(name: projectName);
     Map<String, String> envVars = Platform.environment;
     final homeDirectory = envVars["UserProfile"];
-    project.path = path.join(homeDirectory as String, ".knownledga", "projects", projectName);
+    project.path = path.join(homeDirectory as String, ".knownledga", "projects", project.name);
     await Directory(project.path).create(recursive: true);
-
-    // Update state
-    addProjectInProjectList(project);
+    return project;
   }
-  */
 
   /*
   @override
@@ -43,24 +37,12 @@ class WindowsProjectApi extends BaseProjectApi {
   }
   */
 
-  /*
   @override
-  createFile(ParentElement parent, String fileName) async {
-    addLog(ApplicationLog.logLevelDebug, "Project", "Create file '$fileName'");
-    ProjectElement element;
-    if (parent is Project) {
-      element = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: parent);
-      element.path = path.join(parent.path, element.name);
-    } else if (parent is ProjectElement) {
-      element = ProjectElement(type: ProjectElement.typeFile, name: fileName, project: parent.project);
-      element.path = path.join(parent.path, element.name);
-    } else {
-      throw ErrorDescription("createFile - Invalid parent instance");
-    }
+  Future<ProjectElement> createProjectElement(ProjectElement element) async {
+    //addLog(ApplicationLog.logLevelDebug, "Project", "Create file '$fileName'");
     await File(element.path).create();
-    addEltToParent(parent, element);
+    return element;
   }
-  */
 
   /*
   @override

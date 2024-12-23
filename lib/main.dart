@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         textSelectionTheme: const TextSelectionThemeData(selectionColor: Colors.lightBlue)
       ),
       home: Scaffold(
-        body: ApplicationScreen(viewModel: ApplicationViewModel(api: Api()))
+        body: ApplicationScreen(viewModel: ApplicationViewModel(api: Api.init()))
       )
     );
   }

@@ -32,7 +32,7 @@ class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
           _buildSyncBtn()
         ],
         children: [
-          Padding(padding: const EdgeInsets.only(top: 10, left: 20), child: Column(children: _buildChildren()))
+          Padding(padding: const EdgeInsets.only(top: 3, left: 5), child: Column(children: _buildChildren()))
         ],
       );
     });

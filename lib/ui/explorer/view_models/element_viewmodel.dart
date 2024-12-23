@@ -13,15 +13,15 @@ class ElementViewModel with ChangeNotifier {
     _element = element;
 
   Future<void> renameElement(String newName) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await _projectViewModel.applicationViewModel.renameElement(this, newName);
     _element.name = newName;
     _isRenaming = false;
     notifyListeners();
   }
 
   Future<void> openElement() async {
-    await Future.delayed(const Duration(seconds: 1));
-    projectViewModel.applicationViewModel.openElement(this);
+    await projectViewModel.applicationViewModel.openElement(this);
+    notifyListeners();
   }
 
   cancelRenaming() {
@@ -33,8 +33,18 @@ class ElementViewModel with ChangeNotifier {
     return _projectViewModel;
   }
 
+  ProjectElement get element {
+    return _element;
+  }
+
   String get elementName {
     return _element.name;
+  }
+  String get elementContent {
+    return _element.content;
+  }
+  set elementContent(String value) {
+    _element.content = value;
   }
 
   bool get isRenaming {

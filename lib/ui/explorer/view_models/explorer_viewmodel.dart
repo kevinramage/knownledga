@@ -8,9 +8,10 @@ class ExplorerViewModel with ChangeNotifier {
 
   ExplorerViewModel({required ApplicationViewModel application}) : _application = application;
   
-  void addProject(ProjectViewModel projectViewModel) {
+  Future<void> addProject(ProjectViewModel projectViewModel) async {
     if (projectViewModel.project.name != "") {
-      _projects.add(projectViewModel);
+      final pj = await _application.createProject(projectViewModel);
+      _projects.add(pj);
       notifyListeners();
     }
   }

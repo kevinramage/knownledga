@@ -45,7 +45,7 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
 
     Widget _buildChildTextElement(ElementViewModel elementViewModel) {
     if (elementViewModel.isRenaming) {
-      return Container(width: 200, padding: const EdgeInsets.all(0), child: TextField(
+      return Container(width: 150, padding: const EdgeInsets.all(0), child: TextField(
         cursorHeight: 12,
         cursorColor: Colors.white,
         focusNode: _focusRenameElement,

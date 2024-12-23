@@ -20,8 +20,13 @@ class CreateProjectViewModel extends ChangeNotifier {
     applicationHome = application.getHomeDirectory();
   }
 
+  initHomeDirectory() {
+    applicationHome = _applicationViewModel.getHomeDirectory();
+  }
+
   ProjectViewModel toProjectViewModel(ApplicationViewModel applicationViewModel) {
     final Project project = Project(name: projectName);
+    project.path = projectLocation;
     return ProjectViewModel(applicationViewModel: applicationViewModel, project: project);
   }
 
@@ -30,7 +35,7 @@ class CreateProjectViewModel extends ChangeNotifier {
   }
   set projectName (String value) {
     _projectName = value;
-    _setProjectLocation = "$_applicationHome\\$value";
+    _setProjectLocation = "$_applicationHome\\.knownledga\\projects\\$value";
     _isValidProjectName = _applicationViewModel.isValidProjectName(value) == "";
     notifyListeners();
   }
@@ -53,7 +58,7 @@ class CreateProjectViewModel extends ChangeNotifier {
   }
   set applicationHome (String value) {
     _applicationHome = value;
-    _setProjectLocation = "$value\\$_projectName";
+    _setProjectLocation = "$value\\.knownledga\\projects\\$_projectName";
     notifyListeners();
   }
   String get gitUrl {

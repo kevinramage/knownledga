@@ -47,7 +47,9 @@ class _ExpansionElement extends State<ExpansionElement> {
     return GestureDetector(
       child: _buildExpansionContent(),
       onTap: () {
-        setState(() { expanded = !expanded; });
+        if (widget._isExpandable == null || widget._isExpandable == true) {
+          setState(() { expanded = !expanded; });
+        }
       },
     );
   }

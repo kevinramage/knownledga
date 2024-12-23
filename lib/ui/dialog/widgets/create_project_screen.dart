@@ -36,6 +36,7 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
   @override
   void initState() {
     super.initState();
+    widget._model.initHomeDirectory();
     _projectNameController.text = widget._model.projectName;
     _gitUrlController.text = widget._model.gitUrl;
     _gitUsernameController.text = widget._model.gitUsername;

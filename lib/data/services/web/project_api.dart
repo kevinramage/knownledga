@@ -66,6 +66,18 @@ class WebProjectApi extends BaseProjectApi {
 */
 
   @override
+  Future<Project> createProject(Project project) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return project;
+  }
+
+  @override
+  Future<ProjectElement> createProjectElement(ProjectElement element) async {
+    await Future.delayed(const Duration(seconds: 1));
+    return element;
+  }
+
+  @override
   Future<ProjectElement> loadElement(ProjectElement element) async {
     await Future.delayed(const Duration(seconds: 1));
     return element;
