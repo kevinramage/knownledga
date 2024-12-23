@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        textSelectionTheme: const TextSelectionThemeData(selectionColor: Colors.lightBlue)
       ),
       home: Scaffold(
         body: ApplicationScreen(viewModel: ApplicationViewModel(api: Api()))

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
 import 'package:knownledga/ui/dialog/view_models/create_project_viewmodel.dart';
+import 'package:knownledga/ui/explorer/view_models/project_viewmodel.dart';
 
 class DialogCreateProjectScreen {
   
-  Future<CreateProjectViewModel> show(BuildContext context, ApplicationViewModel applicationModel) async {
+  Future<ProjectViewModel> show(BuildContext context, ApplicationViewModel applicationModel) async {
     final CreateProjectViewModel model = CreateProjectViewModel(application: applicationModel);
     await showDialog(context: context, builder: (_) {
       return CreateProjectScreen(model: model);
     });
-    return model;
+    return model.toProjectViewModel(applicationModel);
   }
 }
 
@@ -81,9 +82,9 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
               Navigator.pop(context, "Cancel");  
             }),
             FilledButton(
-              style: FilledButton.styleFrom(backgroundColor: Colors.green), 
+              style: FilledButton.styleFrom(backgroundColor: Colors.green),
+              onPressed: widget._model.isValidProperties ? () { Navigator.pop(context, "OK");  } : null,
               child: const Text("Create"),
-              onPressed: widget._model.isValidProperties ? () { Navigator.pop(context, "OK");  } : null
             )
           ]
         );

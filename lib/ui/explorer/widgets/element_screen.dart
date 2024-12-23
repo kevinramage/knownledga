@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:knownledga/data/services/api.dart';
-import 'package:knownledga/data/repositories/explorer/project.dart';
-import 'package:knownledga/data/repositories/explorer/project_element.dart';
+import 'package:knownledga/ui/core/widgets/expansion_element.dart';
+import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
 
 class ElementExplorerScreen extends StatefulWidget {
-  final Api api;
-  final Project project;
-  final ProjectElement element;
 
-  const ElementExplorerScreen({super.key, required this.api, required this.project, required this.element});
+  final ElementViewModel _viewModel;
+
+  const ElementExplorerScreen({super.key, required ElementViewModel elementViewModel}) : 
+    _viewModel = elementViewModel;
 
   @override
   State<StatefulWidget> createState() {
@@ -19,110 +17,80 @@ class ElementExplorerScreen extends StatefulWidget {
 
 class _ElementExplorerScreen extends State<ElementExplorerScreen> {
 
-  String renameFileName = "";
-  bool renaming = false;
+  final TextEditingController _controllerRenameElement = TextEditingController(text: "");
+  final FocusNode _focusRenameElement = FocusNode();
+
+  @override
+  void dispose() {
+    _controllerRenameElement.dispose();
+    _focusRenameElement.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.element.type == ProjectElement.typeFolder) {
-      return buildFolder();
-    } else if (widget.element.type == ProjectElement.typeFile) {
-      return buildElement();
+    return ListenableBuilder(listenable: elementViewModel, builder: (context, builder) {
+      return ExpansionElement(
+        leading: const Icon(Icons.text_snippet_sharp, color: Colors.white, size: 15),
+        title: _buildChildTextElement(elementViewModel),
+        isExpandable: false,
+        commands: [
+          _renameElementBtn(elementViewModel),
+          _deleteElementBtn(elementViewModel)
+        ],
+      );
+    });
+  }
+
+    Widget _buildChildTextElement(ElementViewModel elementViewModel) {
+    if (elementViewModel.isRenaming) {
+      return Container(width: 200, padding: const EdgeInsets.all(0), child: TextField(
+        cursorHeight: 12,
+        cursorColor: Colors.white,
+        focusNode: _focusRenameElement,
+        canRequestFocus: true,
+        style: const TextStyle(fontSize: 12, height: 2, color: Colors.white, decoration: TextDecoration.none),
+        textAlignVertical: const TextAlignVertical(y: 0),
+        controller: _controllerRenameElement,
+        decoration: const InputDecoration(isDense: true),
+        onSubmitted: (value) {
+          elementViewModel.renameElement(value);
+        },
+        onTapOutside: (_) {
+          elementViewModel.cancelRenaming();
+        },
+      ));
     } else {
-      return const Text("Invalid type");
+      return Text(elementViewModel.elementName, 
+        style: const TextStyle(fontSize: 12, color: Colors.white, decoration: TextDecoration.none)
+      );
     }
   }
 
-  Widget buildFolder() {
-    List<Widget> subElts = widget.element.subElements.map((e) => ElementExplorerScreen(api: widget.api, project: widget.project, element: e)).toList();
-    Widget eltWidget = Text(widget.element.name, style: const TextStyle(color: Colors.white, fontSize: 14));
-    if (renaming) {
-      eltWidget = TextField(autofocus: true, controller: TextEditingController(text: renameFileName));
-    }
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, top: 0),
-      child: ExpansionTile(
-        initiallyExpanded: true,
-        title: Row(children: [
-          eltWidget,
-          const Expanded(child: Text("")),
-          PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
-            return <PopupMenuEntry>[
-              const PopupMenuItem(enabled: false, child: Text("Open")),
-              const PopupMenuItem(enabled: false, child: Text("Renaming")),
-              PopupMenuItem(child: const Text("Delete"), onTap: () {
-                widget.api.project.deleteFile(widget.element);
-              }),
-              const PopupMenuDivider(),
-              PopupMenuItem(child: const Text("Create folder"), onTap: () {
-                final folderName = widget.api.project.getValidFolderName(widget.element);
-                widget.api.project.createFolder(widget.element, folderName);
-              }),
-              PopupMenuItem(child: const Text("Create file"), onTap: () {
-                final folderName = widget.api.project.getValidElementName(widget.element);
-                widget.api.project.createFile(widget.element, folderName);
-              }),
-            ];
-          })
-        ]),
-        leading: const Icon(Icons.folder),
-        iconColor: Colors.white,
-        collapsedIconColor: Colors.white,
-        children: subElts,
-      )
+  Widget _renameElementBtn(ElementViewModel element) {
+    return IconButton(
+      onPressed: () async {
+        _controllerRenameElement.text = element.elementName;
+        element.isRenaming = true;
+        _focusRenameElement.requestFocus();
+      }, 
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.edit, size: 15, color: Colors.white)
     );
   }
-  Widget buildElement() {
-    Widget eltWidget = Text(widget.element.name, style: const TextStyle(color: Colors.white, fontSize: 14));
-    if (renaming) {
-      eltWidget = SizedBox(width: 200, child:
-        KeyboardListener(
-          focusNode: FocusNode(),
-          onKeyEvent: (value) {
-            if (value.physicalKey == PhysicalKeyboardKey.enter) {
-              widget.api.project.renameFile(widget.element, renameFileName);
-              setState(() { renaming = false; });
-            }
-            if (value.physicalKey == PhysicalKeyboardKey.escape) {
-              setState(() { renaming = false; });
-            }
-          }, 
-          child: TextField(key: UniqueKey(), autofocus: true, controller: TextEditingController(text: renameFileName), onChanged: (value) {
-            setState(() { renameFileName = value; });
-          })
-      ));
-    }
-    return Padding(
-      padding: const EdgeInsets.only(left: 5, top: 0),
-      child: ListTile(
-        title: Row(children: [
-          InkWell(
-            onTap: () {
-              widget.api.project.openFile(widget.element);
-            },
-            child: eltWidget
-          ),
-          const Expanded(child: Text("")),
-          PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
-            return <PopupMenuEntry>[
-              PopupMenuItem(child: const Text("Open"), onTap: () {
-                widget.api.project.openFile(widget.element);
-              }),
-              PopupMenuItem(child: const Text("Rename"), onTap: (){
-                setState(() {
-                  renaming = true;
-                  renameFileName = widget.element.name;
-                });
-              }),
-              PopupMenuItem(child: const Text("Delete"), onTap: () {
-                widget.api.project.deleteFile(widget.element);
-              })
-            ];
-          })
-        ]),
-        iconColor: Colors.white,
-        leading: const Icon(Icons.newspaper),
-      )
+
+  Widget _deleteElementBtn(ElementViewModel element) {
+    return IconButton(
+      onPressed: () {
+        element.projectViewModel.deleteElement(element);
+      }, 
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.delete, size: 15, color: Colors.white)
     );
+  }
+
+
+  ElementViewModel get elementViewModel {
+    return widget._viewModel;
   }
 }

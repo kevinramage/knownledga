@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/ui/dialog/widgets/create_project_screen.dart';
-import 'package:knownledga/ui/explorer/view_models/explorer_modelView.dart';
+import 'package:knownledga/ui/explorer/view_models/explorer_viewmodel.dart';
 import 'package:knownledga/ui/explorer/widgets/project_screen.dart';
 
 class ExplorerScreen extends StatefulWidget {
 
-  final ExplorerModelView _modelView;
+  final ExplorerViewModel _modelView;
 
-  const ExplorerScreen({super.key, required ExplorerModelView explorer}) : _modelView = explorer;
+  const ExplorerScreen({super.key, required ExplorerViewModel explorer}) : _modelView = explorer;
 
   @override
   State<StatefulWidget> createState() {
@@ -21,18 +20,7 @@ class _ExplorerScreen extends State<ExplorerScreen> {
   @override
   void initState() {
     super.initState();
-    final pj = Project(name: "Test2");
-    widget._modelView.addProject(pj);
-    //widget._explorerModelView.getApi();
-    //widget._explorerModelView.getApi().project.registerGetProjects(() { return _model.projects; });
-    //widget.api.project.registerSetProjects((pjs) { setState(() { _model.projects = pjs; }); });
-
-    // Load project
-    /*
-    widget.api.project.loadProjects().then((pjs) {
-      setState(() { _model.projects = pjs; });
-    });
-    */
+    widget._modelView.loadProjects();
   }
 
   @override
@@ -57,8 +45,7 @@ class _ExplorerScreen extends State<ExplorerScreen> {
           PopupMenuItem(child: const Text("Create new project"), onTap: () async {
             final applicationViewModel = widget._modelView.applicationViewModel;
             final projectViewModel = await DialogCreateProjectScreen().show(context, applicationViewModel);
-            final project = Project(name: projectViewModel.projectName);
-            widget._modelView.addProject(project);
+            widget._modelView.addProject(projectViewModel);
           })
       ];
     });
@@ -66,7 +53,7 @@ class _ExplorerScreen extends State<ExplorerScreen> {
 
   Widget _buildProjects() {
     return Expanded(child: ListView(children: widget._modelView.projects.map((p) { 
-      return ProjectExplorerScreen(api: widget._modelView.api, project: p); 
+      return ProjectExplorerScreen(projectViewModel: p); 
     }).toList()));
   }
 }

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
+import 'package:knownledga/ui/core/widgets/expansion_element.dart';
+import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
+import 'package:knownledga/ui/explorer/view_models/project_viewmodel.dart';
 import 'package:knownledga/ui/explorer/widgets/element_screen.dart';
-import 'package:knownledga/data/services/api.dart';
 
 class ProjectExplorerScreen extends StatefulWidget {
-  final Project project;
-  final Api api;
+  final ProjectViewModel _modelView;
 
-  const ProjectExplorerScreen({super.key, required this.api, required this.project});
+  const ProjectExplorerScreen({super.key, required ProjectViewModel projectViewModel}):
+    _modelView = projectViewModel;
 
   @override
   State<StatefulWidget> createState() {
@@ -17,48 +19,74 @@ class ProjectExplorerScreen extends StatefulWidget {
 
 class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
 
-  String renameProjectName = "";
-
-  @override
-  void initState() {
-    renameProjectName = widget.project.name;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    Widget eltWidget = Text(widget.project.name, style: const TextStyle(color: Colors.white, decoration: TextDecoration.none));
-    if (widget.project.isCreating) {
-      eltWidget = Expanded(child: TextField(autofocus: true, controller: TextEditingController(text: renameProjectName)));
+    return ListenableBuilder(listenable: widget._modelView, builder: (context, builder) {
+      return ExpansionElement(
+        leading: _buildProjectType(),
+        title: _buildProjectName(),
+        expanded: widget._modelView.projectExpanded,
+        commands: [
+          _buildAddElementBtn(),
+          _buildAddFolderBtn(),
+          _buildSyncBtn()
+        ],
+        children: [
+          Padding(padding: const EdgeInsets.only(top: 10, left: 20), child: Column(children: _buildChildren()))
+        ],
+      );
+    });
+  }
+
+  Widget _buildProjectName() {
+    return Text(widget._modelView.project.name.toUpperCase(), style: const TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.w800,
+      fontSize: 12, 
+      decoration: TextDecoration.none
+    ));
+  }
+
+  Icon _buildProjectType() {
+    if (widget._modelView.project.type == ProjectType.gitProject) {
+      return const Icon(Icons.explore, size: 15, color: Colors.white);
+    } else {
+      return const Icon(Icons.work, size: 15, color: Colors.white);
     }
-    return ExpansionTile(
-      leading: const Icon(Icons.work, color: Colors.white),
-      initiallyExpanded: true,
-      title: Row(children: [
-        eltWidget,
-        const Expanded(child: Text("")),
-        PopupMenuButton(iconColor: Colors.white, itemBuilder: (BuildContext context) {
-          return <PopupMenuEntry>[
-            const PopupMenuItem(enabled: false, child: Text("Rename project")),
-            const PopupMenuItem(enabled: false, child: Text("Configure project")),
-            PopupMenuItem(child: const Text("Delete project"), onTap:(){
-              widget.api.project.deleteProject(widget.project.name);
-            }),
-            const PopupMenuDivider(),
-            PopupMenuItem(child: const Text("Create folder"), onTap: () {
-              final folderName = widget.api.project.getValidFolderName(widget.project);
-              widget.api.project.createFolder(widget.project, folderName);
-            }),
-            PopupMenuItem(child: const Text("Create file"), onTap: () {
-              final eltName = widget.api.project.getValidElementName(widget.project);
-              widget.api.project.createFile(widget.project, eltName);
-            }),
-            
-          ];
-        })
-      ]),
-      collapsedIconColor: Colors.white,
-      children: widget.project.elements.map((e) { return ElementExplorerScreen(api: widget.api, project: widget.project, element: e); }).toList(),
+  }
+
+  Widget _buildAddElementBtn() {
+    return IconButton(
+      onPressed: () {
+        widget._modelView.addBuildingElement();
+      }, 
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.post_add, size: 15, color: Colors.white)
     );
+  }
+
+  Widget _buildAddFolderBtn() {
+    return IconButton(
+      onPressed: () {},
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.create_new_folder, size: 15, color: Colors.white)
+    );
+  }
+
+  Widget _buildSyncBtn() {
+    return IconButton(
+      onPressed: () {}, 
+      padding: const EdgeInsets.all(0), 
+      icon: const Icon(Icons.sync, size: 15, color: Colors.white)
+    );
+  }
+
+  List<Widget> _buildChildren() {
+    List<Widget> widgets = [];
+    if (widget._modelView.builtElement != null) {
+      widgets.add(ElementExplorerScreen(elementViewModel: widget._modelView.builtElement as ElementViewModel));
+    }
+    widgets.addAll(widget._modelView.elements.map((e) => ElementExplorerScreen(elementViewModel: e) ));
+    return widgets;
   }
 }

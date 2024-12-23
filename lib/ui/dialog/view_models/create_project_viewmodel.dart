@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
+import 'package:knownledga/ui/explorer/view_models/project_viewmodel.dart';
 
 class CreateProjectViewModel extends ChangeNotifier {
   final ApplicationViewModel _applicationViewModel;
 
-  String _projectName = "Project 1";
+  String _projectName = "Project1";
   String _projectLocation = "";
   ProjectType _projectType = ProjectType.localProject;
   String _applicationHome = "";
   String _gitUrl = "";
   String _gitUsername = "";
   String _gitPassword = "";
-  bool _isValidProjectName = false;
+  bool _isValidProjectName = true;
   bool _isValidProjectLocation = false;
   
   CreateProjectViewModel({required ApplicationViewModel application}) : _applicationViewModel = application {
     applicationHome = application.homeDirectory;
+  }
+
+  ProjectViewModel toProjectViewModel(ApplicationViewModel applicationViewModel) {
+    final Project project = Project(name: projectName);
+    return ProjectViewModel(applicationViewModel: applicationViewModel, project: project);
   }
 
   String get projectName {
