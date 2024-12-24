@@ -7,6 +7,7 @@ class ElementViewModel with ChangeNotifier {
   final ProjectElement _element;
   bool isBuilt = false;
   bool _isRenaming = false;
+  bool isModified = false;
 
   ElementViewModel({required ProjectViewModel projectViewModel, required ProjectElement element}) :
     _projectViewModel = projectViewModel,
@@ -26,6 +27,16 @@ class ElementViewModel with ChangeNotifier {
 
   cancelRenaming() {
     _isRenaming = false;
+    notifyListeners();
+  }
+
+  void saveContent() {
+    isModified = false;
+    notifyListeners();
+  }
+
+  void indicateContentChange() {
+    isModified = true;
     notifyListeners();
   }
 

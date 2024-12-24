@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/ui/content/view_models/editor_viewmodel.dart';
+import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
 
 class FileNameScreen extends StatefulWidget {
 
@@ -15,24 +16,6 @@ class FileNameScreen extends StatefulWidget {
 
 class _FileNameScreen extends State<FileNameScreen> {
 
-  bool saved = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant FileNameScreen oldWidget) {
-    /*
-    final newElt = widget.activeElement;
-    if (newElt != null) {
-      setState(() { saved = newElt.saved; });
-    }
-    */
-    super.didUpdateWidget(oldWidget);
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(listenable: viewModel, builder: (context, builder) {
@@ -47,26 +30,47 @@ class _FileNameScreen extends State<FileNameScreen> {
   Widget? buildTabFile() {
     final elt = viewModel.currentElement;
     if (elt != null) {
-      final savedSection = saved ? const Text("") : const Icon(Icons.circle, color: Colors.white);
+      return _buildTabWidget(elt);
+    } else {
+      return null;
+    }
+  }
+
+  Widget _buildTabWidget(ElementViewModel elt) {
+    return ListenableBuilder(listenable: elt, builder: (context, child) {
       return Container(
         width: 180, height: 25,
         color: Colors.grey.shade600,
         child: Padding(padding: const EdgeInsets.only(left: 5, top: 2),
           child: Row(children: [
-            Text(elt.elementName, textAlign: TextAlign.left, 
-              style: const TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 12)
-            ),
+            _buildTabText(elt),
             const Expanded(child: Text("")),
-            savedSection,
-            IconButton(icon: const Icon(Icons.close, color: Colors.white), padding: const EdgeInsets.all(0), onPressed: () {
-              //widget.api.content.setActiveElt(null);
-            })
+            _buildTabIcon(elt),
+            _buildTabCloseBtn(elt)
           ]
         ))
       );
+    });
+  }
+
+  Widget _buildTabText(ElementViewModel elt) {
+    return Text(elt.elementName, textAlign: TextAlign.left, 
+      style: const TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 12),
+    );
+  }
+
+  Widget _buildTabIcon(ElementViewModel elt) {
+    if (elt.isModified) {
+      return const Icon(Icons.circle, color: Colors.white, size: 12);
     } else {
-      return null;
+      return const Text("");
     }
+  }
+
+  Widget _buildTabCloseBtn(ElementViewModel elt) {
+    return IconButton(icon: const Icon(Icons.close, color: Colors.white), padding: const EdgeInsets.all(0), onPressed: () {
+      viewModel.closeCurrentElement();
+    });
   }
 
   EditorViewModel get viewModel {

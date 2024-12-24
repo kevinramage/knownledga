@@ -9,5 +9,7 @@
 - [x] Rename a file
 - [x] Delete a file
 
-- [ ] Latency
-- [ ] Error 
+## Git project
+- [x] Load projects
+- [x] Create project
+- [x] Push data

@@ -85,6 +85,7 @@ class _EditorFileScreen extends State<EditorFileScreen> {
       maxLines: 200,
       onChanged: (value) {
         viewModel.currentElement!.elementContent = value;
+        viewModel.currentElement!.indicateContentChange();
       }
     );
   }

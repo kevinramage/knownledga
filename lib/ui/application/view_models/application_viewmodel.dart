@@ -32,6 +32,7 @@ class ApplicationViewModel with ChangeNotifier {
   }
 
   Future<void> saveElement(ElementViewModel elementViewModel) async {
+    elementViewModel.saveContent();
     await _api.project.saveElementContent(elementViewModel.element);
   }
 

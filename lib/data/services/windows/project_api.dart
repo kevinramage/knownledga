@@ -22,7 +22,6 @@ class WindowsProjectApi extends BaseProjectApi {
   }
 
   _createLocalProject(Project project) async {
-    print("Create local project");
     final homeDirectory = getHomeDirectory();
     project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
     await Directory(project.path).create(recursive: true);
@@ -30,7 +29,6 @@ class WindowsProjectApi extends BaseProjectApi {
   }
 
   _createGitProject(Project project) async {
-    print("Create git project");
     final homeDirectory = getHomeDirectory();
     project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
     await GitHelper.clone(project.gitUrl, project.path);
@@ -138,6 +136,7 @@ class WindowsProjectApi extends BaseProjectApi {
       }, onDone: () {
         //addLog(ApplicationLog.logLevelInfo, "Project", "${projects.length} projects loaded");
         //sortElements(projects);
+        _updateProjectsType(projects);
         completer.complete(projects);
       }
     );
@@ -204,6 +203,15 @@ class WindowsProjectApi extends BaseProjectApi {
       allElements.addAll(elts);
     }
     return allElements;
+  }
+
+  void _updateProjectsType(List<Project> projects) {
+    for (var p in projects) {
+      final elt = p.elements.where((e) => e.name == ".git" && e.type == ProjectElement.typeFolder );
+      if (elt.length == 1) {
+        p.type = ProjectType.gitProject;
+      }
+    }
   }
 
   @override

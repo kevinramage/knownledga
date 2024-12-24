@@ -13,6 +13,11 @@ class EditorViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void closeCurrentElement() {
+    currentElement = null;
+    notifyListeners();
+  }
+
   ApplicationViewModel get applicationViewModel {
     return _applicationViewModel;
   }
