@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/ui/dialog/widgets/create_project_screen.dart';
+import 'package:knownledga/ui/dialog/widgets/error_viewer_screen.dart';
 import 'package:knownledga/ui/explorer/view_models/explorer_viewmodel.dart';
 import 'package:knownledga/ui/explorer/widgets/project_screen.dart';
 
@@ -44,8 +46,16 @@ class _ExplorerScreen extends State<ExplorerScreen> {
       return [
           PopupMenuItem(child: const Text("Create new project"), onTap: () async {
             final applicationViewModel = widget._modelView.applicationViewModel;
-            final projectViewModel = await DialogCreateProjectScreen().show(context, applicationViewModel);
-            widget._modelView.addProject(projectViewModel);
+            try {
+              final projectViewModel = await DialogCreateProjectScreen().show(context, applicationViewModel);
+              await widget._modelView.addProject(projectViewModel);
+            } on KnowledgaException catch (e) {
+              if (context.mounted) {
+                DialogErrorViewerScreen().show(context, e);
+              } else {
+                throw Exception("Impossible to display error, invalid context");
+              }
+            }
           })
       ];
     });

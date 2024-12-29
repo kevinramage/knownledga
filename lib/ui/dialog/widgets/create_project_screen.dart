@@ -30,8 +30,6 @@ class CreateProjectScreen extends StatefulWidget {
 class _CreateProjectScreen extends State<CreateProjectScreen> {
   final TextEditingController _projectNameController = TextEditingController();
   final TextEditingController _gitUrlController = TextEditingController();
-  //final TextEditingController _gitUsernameController = TextEditingController();
-  //final TextEditingController _gitPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,16 +37,12 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
     widget._model.initHomeDirectory();
     _projectNameController.text = widget._model.projectName;
     _gitUrlController.text = widget._model.gitUrl;
-    //_gitUsernameController.text = widget._model.gitUsername;
-    //_gitPasswordController.text = widget._model.gitPassword;
   }
 
   @override
   void dispose() {
     _projectNameController.dispose();
     _gitUrlController.dispose();
-    //_gitUsernameController.dispose();
-    //_gitPasswordController.dispose();
     super.dispose();
   }
 
@@ -56,8 +50,6 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
   Widget build(BuildContext context) {
     List<Widget> widgetList = [ _buildProjectName() ];
     widgetList.add(_buildProjectLocation());
-    //widgetList.add(_buildProjectType());
-    //widgetList.addAll(_buildGitWidgets());
 
     return ListenableBuilder(
       listenable: widget._model, builder: (context, child) {
@@ -71,14 +63,6 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
               const Padding(padding: EdgeInsets.only(top: 10, bottom: 10), child: Divider()),
             if (widget._model.projectType == ProjectType.gitProject)
               _buildProjectGitUrl(),
-            /*
-            if (widget._model.projectType == ProjectType.gitProject)
-              _buildProjectGitUsername(),
-            */
-            /*
-            if (widget._model.projectType == ProjectType.gitProject)
-              _buildProjectGitPassword()
-            */
         
           ]))),
           actions: [
@@ -165,36 +149,5 @@ class _CreateProjectScreen extends State<CreateProjectScreen> {
       onChanged: (value) {  widget._model.gitUrl = value; },
     );
   }
-
-  /*
-  Widget _buildProjectGitUsername() {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: "Username",
-        prefixIcon: const Icon(Icons.people),
-        suffixIcon: _buildValidationIcon(widget._model.isValidGitUserName)
-      ),
-      controller: _gitUsernameController,
-      autofocus: true,
-      onChanged: (value) {  widget._model.gitUsername = value; },
-    );
-  }
-  */
-
-  /*
-  Widget _buildProjectGitPassword() {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: "Password",
-        prefixIcon: const Icon(Icons.password),
-        suffixIcon: _buildValidationIcon(widget._model.isValidGitPassword)
-      ),
-      controller: _gitPasswordController,
-      obscureText: true,
-      autofocus: true,
-      onChanged: (value) {  widget._model.gitPassword = value; },
-    );
-  }
-  */
 }
 

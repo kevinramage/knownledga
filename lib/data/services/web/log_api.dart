@@ -1,5 +1,6 @@
 import 'package:knownledga/data/repositories/core/log.dart';
 import 'package:knownledga/data/services/base/log_api.dart';
+import 'package:knownledga/data/repositories/core/exception.dart';
 
 class WebLogApi extends BaseLogApi {
 
@@ -16,5 +17,10 @@ class WebLogApi extends BaseLogApi {
   @override
   addErrorLog(LogComponent component, String message) {
     addLog(LogLevel.error, component, message);
+  }
+
+  @override
+  addExceptionLog(LogComponent component, KnowledgaException exception, [StackTrace? stackTrace]) {
+    addErrorLog(component, "${exception.code} - ${exception.message}");
   }
 }

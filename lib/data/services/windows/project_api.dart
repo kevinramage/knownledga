@@ -6,6 +6,7 @@ import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
 import 'package:knownledga/data/services/git_helper.dart';
+import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/data/services/window_helper.dart';
 import 'package:path/path.dart';
 import 'package:path/path.dart' as path;
@@ -14,6 +15,9 @@ class WindowsProjectApi extends BaseProjectApi {
 
   _logInfo(String message) {
     log.addInfoLog(LogComponent.project, message);
+  }
+  _logException(KnowledgaException exception, [StackTrace? stackTrace]) {
+    log.addExceptionLog(LogComponent.project, exception, stackTrace);
   }
 
   @override
@@ -29,15 +33,27 @@ class WindowsProjectApi extends BaseProjectApi {
 
   _createLocalProject(Project project) async {
     project.path = WindowsHelper.getKnownledgaProjectDirectory(project.name);
-    await Directory(project.path).create(recursive: true);
+    bool existed = await Directory(project.path).exists();
+    if (!existed) {
+      try {
+        await Directory(project.path).create(recursive: true);
+      } catch (e, stackTrace) {
+        final exception = KnowledgaException(code: codeProjectCreateTechnical,  message: "Impossible to create a local project a project, a technical error occured: ${e.toString()}, please check logs");
+        _logException(exception, stackTrace);
+        throw exception;
+      }
+    } else {
+      final exception = KnowledgaException(code: codeProjectDirExisted,  message: "Impossible to create a local project a project '${project.path}', a directory already existed");
+      _logException(exception);
+      throw exception;
+    }
+    
     return project;
   }
 
   _createGitProject(Project project) async {
-    _logInfo("Cloning '${project.name}' ('${project.gitUrl}')");
     project.path = WindowsHelper.getKnownledgaProjectDirectory(project.name);
-    await GitHelper.clone(project.gitUrl, project.path);
-    _logInfo("'${project.name}' cloned successfully");
+    await GitHelper.clone(log, project.gitUrl, project.path);
   }
 
   /*
@@ -60,7 +76,14 @@ class WindowsProjectApi extends BaseProjectApi {
   @override
   Future<ProjectElement> createProjectElement(ProjectElement element) async {
     _logInfo("Create file '${element.name}'");
-    await File(element.path).create();
+    try {
+      await File(element.path).create();
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileCreateTechnical,  message: "Impossible to create a file, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
+    
     return element;
   }
 
@@ -86,20 +109,38 @@ class WindowsProjectApi extends BaseProjectApi {
   @override
   Future<void> deleteElement(ProjectElement element) async {
     _logInfo("Delete element '${element.name}'");
-    await File(element.path).delete(recursive: true);
+    try {
+      await File(element.path).delete(recursive: true);
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileDeleteTechnical, message: "Impossible to delete a file, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
   }
 
   @override
   loadElement(ProjectElement element) async {
     //addLog(ApplicationLog.logLevelDebug, "Project", "Open file '${element.name}'");
+    try {
     element.content = await File(element.path).readAsString();
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileReadTechnical, message: "Impossible to read a file, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
     return element;
   }
 
   @override
   Future<void> saveElementContent(ProjectElement element) async {
     //addLog(ApplicationLog.logLevelDebug, "Project", "Save file '${element.name}'");
-    await File(element.path).writeAsString(element.content);
+    try {
+      await File(element.path).writeAsString(element.content);
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileWriteTechnical, message: "Impossible to write a file, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
   }
 
   @override
@@ -115,9 +156,15 @@ class WindowsProjectApi extends BaseProjectApi {
       throw ErrorDescription("renameFile - Invalid parent instance");
     }
     final newPath = path.join(parentPath, newName);
-    await File(element.path).rename(newPath);
-    element.name = newName;
-    element.path = newPath;
+    try {
+        await File(element.path).rename(newPath);
+        element.name = newName;
+        element.path = newPath;
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileRenameTechnical, message: "Impossible to rename a file, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
     return element;
   }
 
@@ -132,20 +179,27 @@ class WindowsProjectApi extends BaseProjectApi {
     final projectsPath = WindowsHelper.getKnownledgaProjectsDirectory();
 
     // Read directory
-    final listener = Directory(projectsPath).list(recursive: true);
-    listener.listen((file) async { 
-        readFileFromDirectory(projects, projectsPath, file);
-      }, onError: (err) {
-        completer.completeError(err);
-      }, onDone: () {
-        _logInfo("${projects.length} projects loaded");
-        //sortElements(projects);
-        _updateProjectsType(projects);
-        completer.complete(projects);
-      }
-    );
+    try {
+      final listener = Directory(projectsPath).list(recursive: true);
+      listener.listen((file) async { 
+          readFileFromDirectory(projects, projectsPath, file);
+        }, onError: (err) {
+          completer.completeError(err);
+        }, onDone: () {
+          _logInfo("${projects.length} projects loaded");
+          //sortElements(projects);
+          _updateProjectsType(projects);
+          completer.complete(projects);
+        }
+      );
 
-    return completer.future;
+      return completer.future;
+
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeProjectDirReadTechnical, message: "Impossible to read directories, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
   }
 
   void readFileFromDirectory(List<Project> projects, String path, FileSystemEntity file) {
@@ -222,11 +276,9 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<void> push(Project project) async {
-    _logInfo("Pushing project '${project.name}'");
-    await GitHelper.add(project.path);
-    await GitHelper.commit(project.path);
-    await GitHelper.push(project.path);
-    _logInfo("Project '${project.name}' pushed");
+    await GitHelper.add(log, project.path);
+    await GitHelper.commit(log, project.path);
+    await GitHelper.push(log, project.path);
   }
 
   @override
