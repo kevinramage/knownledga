@@ -1,7 +1,10 @@
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
+import 'package:knownledga/data/services/base/log_api.dart';
 
 abstract class BaseProjectApi {
+
+  late BaseLogApi log;
 
   /*
    * All interfaces

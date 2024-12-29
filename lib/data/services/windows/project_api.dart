@@ -1,18 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/core/log.dart';
 import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
 import 'package:knownledga/data/services/git_helper.dart';
+import 'package:knownledga/data/services/window_helper.dart';
 import 'package:path/path.dart';
 import 'package:path/path.dart' as path;
 
 class WindowsProjectApi extends BaseProjectApi {
 
+  _logInfo(String message) {
+    log.addInfoLog(LogComponent.project, message);
+  }
+
   @override
   Future<Project> createProject(Project project) async {
-    //addLog(ApplicationLog.logLevelInfo, "Project", "Create project '$projectName'");
+    _logInfo("Create project '${project.name}'");
     if (project.type == ProjectType.localProject) {
       await _createLocalProject(project);
     } else {
@@ -22,16 +28,16 @@ class WindowsProjectApi extends BaseProjectApi {
   }
 
   _createLocalProject(Project project) async {
-    final homeDirectory = getHomeDirectory();
-    project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
+    project.path = WindowsHelper.getKnownledgaProjectDirectory(project.name);
     await Directory(project.path).create(recursive: true);
     return project;
   }
 
   _createGitProject(Project project) async {
-    final homeDirectory = getHomeDirectory();
-    project.path = path.join(homeDirectory, ".knownledga", "projects", project.name);
+    _logInfo("Cloning '${project.name}' ('${project.gitUrl}')");
+    project.path = WindowsHelper.getKnownledgaProjectDirectory(project.name);
     await GitHelper.clone(project.gitUrl, project.path);
+    _logInfo("'${project.name}' cloned successfully");
   }
 
   /*
@@ -53,7 +59,7 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<ProjectElement> createProjectElement(ProjectElement element) async {
-    //addLog(ApplicationLog.logLevelDebug, "Project", "Create file '$fileName'");
+    _logInfo("Create file '${element.name}'");
     await File(element.path).create();
     return element;
   }
@@ -79,7 +85,7 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<void> deleteElement(ProjectElement element) async {
-    //addLog(ApplicationLog.logLevelDebug, "Project", "Delete element '${element.name}'");
+    _logInfo("Delete element '${element.name}'");
     await File(element.path).delete(recursive: true);
   }
 
@@ -98,8 +104,7 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<ProjectElement> renameElement(ProjectElement element, String newName) async {
-    //addLog(ApplicationLog.logLevelDebug, "Project", "Rename file '${element.name}' to $newName");
-    //bool isActiveElt = isActiveElement(element);
+    _logInfo("Rename file '${element.name}' to $newName");
     String parentPath = "";
     final parent = element.parent;
     if (parent is Project) {
@@ -118,14 +123,13 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<List<Project>> loadAllProjects() async {
+    _logInfo("Loading projects");
     //addLog(ApplicationLog.logLevelDebug, "Project", "Load projects");
     final completer = Completer<List<Project>>();
     List<Project> projects = [];
 
     // Identify path
-    Map<String, String> envVars = Platform.environment;
-    final homeDirectory = envVars["UserProfile"];
-    final projectsPath = path.join(homeDirectory as String, ".knownledga", "projects");
+    final projectsPath = WindowsHelper.getKnownledgaProjectsDirectory();
 
     // Read directory
     final listener = Directory(projectsPath).list(recursive: true);
@@ -134,7 +138,7 @@ class WindowsProjectApi extends BaseProjectApi {
       }, onError: (err) {
         completer.completeError(err);
       }, onDone: () {
-        //addLog(ApplicationLog.logLevelInfo, "Project", "${projects.length} projects loaded");
+        _logInfo("${projects.length} projects loaded");
         //sortElements(projects);
         _updateProjectsType(projects);
         completer.complete(projects);
@@ -148,7 +152,9 @@ class WindowsProjectApi extends BaseProjectApi {
 
     // Check directory to check if it's a root folder
     if (file.parent.path == path) {
-      readProjectFromDirectory(projects, path, file);
+      if (file.statSync().type == FileSystemEntityType.directory) {
+        readProjectFromDirectory(projects, path, file);
+      }
     } else {
       final fileType = file.statSync().type;
       final parentElement = detectParent(projects, file.parent);
@@ -216,22 +222,15 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<void> push(Project project) async {
+    _logInfo("Pushing project '${project.name}'");
     await GitHelper.add(project.path);
     await GitHelper.commit(project.path);
     await GitHelper.push(project.path);
+    _logInfo("Project '${project.name}' pushed");
   }
 
   @override
   String getHomeDirectory() {
-    String home = "";
-    Map<String, String> envVars = Platform.environment;
-    if (Platform.isMacOS) {
-      home = envVars['HOME'] as String;
-    } else if (Platform.isLinux) {
-      home = envVars['HOME'] as String;
-    } else if (Platform.isWindows) {
-      home = envVars['UserProfile'] as String;
-    }
-    return home;
+    return WindowsHelper.getHomeDirectory();
   }
 }

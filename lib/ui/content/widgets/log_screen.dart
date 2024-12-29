@@ -30,6 +30,7 @@ class ContentLogScreen extends StatelessWidget {
   }
 
   buildLogLevel(ApplicationLog log) {
+    /*
     if (log.level == ApplicationLog.logLevelError) {
       return const Text("ERROR", style: TextStyle(color: Colors.red, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
     } else if (log.level == ApplicationLog.logLevelWarn) {
@@ -39,5 +40,6 @@ class ContentLogScreen extends StatelessWidget {
     } else {
       return const Text("INFO", style: TextStyle(color: Colors.white, decoration: TextDecoration.none, fontWeight: FontWeight.w400));
     }
+    */
   }
 }

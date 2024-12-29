@@ -22,8 +22,8 @@ class _ContentInformationsScreen extends State<ContentInformationsScreen> {
   @override
   void initState() {
     super.initState();
-    widget.api.log.registerGetLogs(() { return logs; });
-    widget.api.log.registerSetLogs((list) { setState(() { logs = list; }); });
+    //widget.api.log.registerGetLogs(() { return logs; });
+    //widget.api.log.registerSetLogs((list) { setState(() { logs = list; }); });
   }
 
   @override
