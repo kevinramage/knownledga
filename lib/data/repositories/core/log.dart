@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:knownledga/data/services/window_helper.dart';
+import 'package:knownledga/data/services/helper/window_helper.dart';
 
 class ApplicationLog {
   DateTime date;

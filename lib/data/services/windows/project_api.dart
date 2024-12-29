@@ -5,9 +5,9 @@ import 'package:knownledga/data/repositories/core/log.dart';
 import 'package:knownledga/data/services/base/project_api.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
-import 'package:knownledga/data/services/git_helper.dart';
+import 'package:knownledga/data/services/helper/git_helper.dart';
 import 'package:knownledga/data/repositories/core/exception.dart';
-import 'package:knownledga/data/services/window_helper.dart';
+import 'package:knownledga/data/services/helper/window_helper.dart';
 import 'package:path/path.dart';
 import 'package:path/path.dart' as path;
 
