@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/core/configuration.dart';
 import 'package:knownledga/data/services/api.dart';
 import 'package:knownledga/ui/content/view_models/content_viewmodel.dart';
 import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
@@ -50,6 +51,14 @@ class ApplicationViewModel with ChangeNotifier {
 
   String getHomeDirectory() {
     return _api.project.getHomeDirectory();
+  }
+
+  Future<KnownledgaConfiguration> loadConfiguration() async {
+    return await _api.application.loadConfiguration();
+  }
+
+  Future<void> saveConfiguration(KnownledgaConfiguration configuration) {
+    return _api.application.saveConfiguration(configuration);
   }
 
   /*

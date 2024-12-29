@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         body: ApplicationScreen(viewModel: ApplicationViewModel(api: Api.init()))
-      )
+      ),
     );
   }
 }

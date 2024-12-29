@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/core/configuration.dart';
 import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/ui/dialog/widgets/create_project_screen.dart';
 import 'package:knownledga/ui/dialog/widgets/error_viewer_screen.dart';
@@ -22,7 +23,16 @@ class _ExplorerScreen extends State<ExplorerScreen> {
   @override
   void initState() {
     super.initState();
-    widget._modelView.loadProjects();
+    _init();
+  }
+
+  _init() {
+    final instance = KnownledgaConfiguration.instance;
+    if (instance != null) {
+      widget._modelView.loadProjects();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), () { _init(); });
+    }
   }
 
   @override

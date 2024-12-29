@@ -5,6 +5,10 @@ class KnowledgaException {
   KnowledgaException({required this.code, required this.message});
 }
 
+// APP
+const codeAppConfReadTechnical = "APP_CONF_READ_TECHNICAL";
+const codeAppConfWriteTechnical = "APP_CONF_WRITE_TECHNICAL";
+
 // DIR
 const codeProjectDirExisted = "PJ_DIR_EXISTED";
 const codeProjectCreateTechnical = "PJ_DIR_CREATE_TECHNICAL";
@@ -12,7 +16,7 @@ const codeProjectDirReadTechnical = "PJ_DIR_READ_TECHNICAL";
 const codeProjectGitCloneTechnical = "PJ_DIR_GIT_CLONE_TECHNICAL";
 const codeProjectGitAddTechnical = "PJ_DIR_GIT_ADD_TECHNICAL";
 const codeProjectGitCommitTechnical = "PJ_DIR_GIT_COMMIT_TECHNICAL";
-const codeProjectGitPushTechnical = "PJ_DIR_GIT_CPUSH_TECHNICAL";
+const codeProjectGitPushTechnical = "PJ_DIR_GIT_PUSH_TECHNICAL";
 
 // FILE
 const codeFileCreateTechnical = "PJ_FILE_CREATE_TECHNICAL";

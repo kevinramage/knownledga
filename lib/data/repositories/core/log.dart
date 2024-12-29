@@ -31,10 +31,11 @@ class LogLevelUtils {
   }
 }
 
-enum LogComponent { project }
+enum LogComponent { application, project }
 class LogComponentUtils {
 static toText(LogComponent logComponent) {
     switch (logComponent) {
+      case LogComponent.application: return "application";
       case LogComponent.project: return "project";
     }
   }
