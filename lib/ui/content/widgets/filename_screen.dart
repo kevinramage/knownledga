@@ -54,7 +54,7 @@ class _FileNameScreen extends State<FileNameScreen> {
   }
 
   Widget _buildTabText(ElementViewModel elt) {
-    return Text(elt.elementName, textAlign: TextAlign.left, 
+    return Text(elt.shortElementName, textAlign: TextAlign.left, 
       style: const TextStyle(color: Colors.white, decoration: TextDecoration.none, fontSize: 12),
     );
   }

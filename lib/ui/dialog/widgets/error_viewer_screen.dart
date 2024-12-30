@@ -33,13 +33,8 @@ class _ErrorViewerScreen extends State<ErrorViewerScreen> {
         padding: const EdgeInsets.only(left: 20), 
         child: Text("ERROR - ${widget.exception.code}", style: const TextStyle(color: Colors.white))
       )),
-      content: SizedBox(height: 50.0, child: Text(widget.exception.message)),
+      content: SizedBox(height: 100.0, child: Text(widget.exception.message)),
       actions: [
-        FilledButton(
-          style: FilledButton.styleFrom(backgroundColor: Colors.red),
-          onPressed: () { Navigator.pop(context, "Cancel"); }, 
-          child: const Text("Cancel")
-        ),
         FilledButton(
           style: FilledButton.styleFrom(backgroundColor: Colors.green),
           onPressed: () { Navigator.pop(context, "OK"); }, 

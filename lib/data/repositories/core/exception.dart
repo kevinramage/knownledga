@@ -17,6 +17,7 @@ const codeProjectGitCloneTechnical = "PJ_DIR_GIT_CLONE_TECHNICAL";
 const codeProjectGitAddTechnical = "PJ_DIR_GIT_ADD_TECHNICAL";
 const codeProjectGitCommitTechnical = "PJ_DIR_GIT_COMMIT_TECHNICAL";
 const codeProjectGitPushTechnical = "PJ_DIR_GIT_PUSH_TECHNICAL";
+const codeProjectGitPushNonGit = "PJ_DIR_GIT_PUSH_NONGIT";
 
 // FILE
 const codeFileCreateTechnical = "PJ_FILE_CREATE_TECHNICAL";

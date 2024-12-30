@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/ui/core/widgets/expansion_element.dart';
+import 'package:knownledga/ui/dialog/widgets/error_viewer_screen.dart';
 import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
 import 'package:knownledga/ui/explorer/view_models/project_viewmodel.dart';
 import 'package:knownledga/ui/explorer/widgets/element_screen.dart';
@@ -27,9 +29,9 @@ class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
         title: _buildProjectName(),
         expanded: widget._modelView.projectExpanded,
         commands: [
-          _buildAddElementBtn(),
-          _buildAddFolderBtn(),
-          _buildSyncBtn()
+          _buildAddElementBtn(context),
+          _buildAddFolderBtn(context),
+          _buildSyncBtn(context)
         ],
         children: [
           Padding(padding: const EdgeInsets.only(top: 3, left: 5), child: Column(children: _buildChildren()))
@@ -55,17 +57,25 @@ class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
     }
   }
 
-  Widget _buildAddElementBtn() {
+  Widget _buildAddElementBtn(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        widget._modelView.addBuildingElement();
+      onPressed: () async {
+        try {
+          await widget._modelView.addBuildingElement();
+        } on KnowledgaException catch (e) {
+          if (context.mounted) {
+            DialogErrorViewerScreen().show(context, e);
+          } else {
+            throw Exception("Impossible to display error, invalid context");
+          }
+        }
       }, 
       padding: const EdgeInsets.all(0), 
       icon: const Icon(Icons.post_add, size: 15, color: Colors.white)
     );
   }
 
-  Widget _buildAddFolderBtn() {
+  Widget _buildAddFolderBtn(BuildContext context) {
     return IconButton(
       onPressed: () {},
       padding: const EdgeInsets.all(0), 
@@ -73,10 +83,18 @@ class _ProjectExplorerScreen extends State<ProjectExplorerScreen> {
     );
   }
 
-  Widget _buildSyncBtn() {
+  Widget _buildSyncBtn(BuildContext context) {
     return IconButton(
-      onPressed: () { 
-        widget._modelView.push(); 
+      onPressed: () async {
+        try {
+          await widget._modelView.push();
+        } on KnowledgaException catch (e) {
+          if (context.mounted) {
+            DialogErrorViewerScreen().show(context, e);
+          } else {
+            throw Exception("Impossible to display error, invalid context");
+          }
+        }
       }, 
       padding: const EdgeInsets.all(0), 
       icon: const Icon(Icons.sync, size: 15, color: Colors.white)

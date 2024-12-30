@@ -145,7 +145,18 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<ProjectElement> renameElement(ProjectElement element, String newName) async {
-    _logInfo("Rename file '${element.name}' to $newName");
+    _logInfo("Rename element '${element.name}' to $newName");
+
+    if (element.type == ProjectElement.typeFolder) {
+      await _renameFolderElement(element, newName);
+    } else {
+      await _renameFileElement(element, newName);
+    }
+
+    return element;
+  }
+
+  String _getParentPath(ProjectElement element) {
     String parentPath = "";
     final parent = element.parent;
     if (parent is Project) {
@@ -155,6 +166,11 @@ class WindowsProjectApi extends BaseProjectApi {
     } else {
       throw ErrorDescription("renameFile - Invalid parent instance");
     }
+    return parentPath;
+  }
+
+  Future<void> _renameFileElement(ProjectElement element, String newName) async {
+    final String parentPath = _getParentPath(element);
     final newPath = path.join(parentPath, newName);
     try {
         await File(element.path).rename(newPath);
@@ -165,8 +181,22 @@ class WindowsProjectApi extends BaseProjectApi {
       _logException(exception, stackTrace);
       throw exception;
     }
-    return element;
   }
+
+  Future<void> _renameFolderElement(ProjectElement element, String newName) async {
+    final String parentPath = _getParentPath(element);
+    final newPath = path.join(parentPath, newName);
+    try {
+        await Directory(element.path).rename(newPath);
+        element.name = newName;
+        element.path = newPath;
+    } catch (e, stackTrace) {
+      final exception = KnowledgaException(code: codeFileRenameTechnical, message: "Impossible to rename a directory, a technical error occured: ${e.toString()}, please check logs");
+      _logException(exception, stackTrace);
+      throw exception;
+    }
+  }
+
 
   @override
   Future<List<Project>> loadAllProjects() async {
@@ -276,9 +306,13 @@ class WindowsProjectApi extends BaseProjectApi {
 
   @override
   Future<void> push(Project project) async {
-    await GitHelper.add(log, project.path);
-    await GitHelper.commit(log, project.path);
-    await GitHelper.push(log, project.path);
+    if (project.type == ProjectType.gitProject) {
+      await GitHelper.add(log, project.path);
+      await GitHelper.commit(log, project.path);
+      await GitHelper.push(log, project.path);
+      } else {
+      throw KnowledgaException(code: codeProjectGitPushNonGit, message: "Impossible to push modifications for a non GIT project");
+    }
   }
 
   @override

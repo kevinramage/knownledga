@@ -23,7 +23,7 @@ class ApplicationViewModel with ChangeNotifier {
 
   Future<ElementViewModel> createProjectElement(ProjectViewModel projectViewModel, ElementViewModel elementViewModel) async {
     final element = await _api.project.createProjectElement(elementViewModel.element);
-    return ElementViewModel(projectViewModel: projectViewModel, element: element);
+    return ElementViewModel(parentElementViewModel: projectViewModel, element: element);
   }
 
   Future<void> openElement(ElementViewModel elementViewModel) async {
