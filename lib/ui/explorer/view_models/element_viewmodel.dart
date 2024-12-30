@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:knownledga/data/repositories/explorer/project.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
 import 'package:knownledga/ui/application/view_models/application_viewmodel.dart';
 import 'package:knownledga/ui/explorer/view_models/parent_element_viewmodel.dart';
@@ -11,6 +12,7 @@ class ElementViewModel extends ParentElementViewModel with ChangeNotifier {
   bool isBuilt = false;
   bool _isRenaming = false;
   bool isModified = false;
+  bool isGitModified = false;
 
   ElementViewModel({required ParentElementViewModel parentElementViewModel, required ProjectElement element}) :
     _parentViewModel = parentElementViewModel,
@@ -47,6 +49,11 @@ class ElementViewModel extends ParentElementViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void pushContent() {
+    isGitModified = false;
+    notifyListeners();
+  }
+
   @override
   Future<void> deleteElement(ElementViewModel element) async {
     await applicationViewModel.deleteElement(element);
@@ -56,6 +63,9 @@ class ElementViewModel extends ParentElementViewModel with ChangeNotifier {
 
   void indicateContentChange() {
     isModified = true;
+    if (projectViewModel.projectType == ProjectType.gitProject) {
+      isGitModified = true;
+    }
     notifyListeners();
   }
 
@@ -93,6 +103,18 @@ class ElementViewModel extends ParentElementViewModel with ChangeNotifier {
   List<ElementViewModel> get subElements {
     return _subElements;
   }
+  List<ElementViewModel> get allFileElements {
+    List<ElementViewModel> elts = [];
+    for (var elt in subElements) {
+      if (elt.elementType == ProjectElement.typeFolder) {
+        elts.addAll(elt.allFileElements);
+      } else {
+        elts.add(elt);
+      }
+    }
+    return elts;
+  }
+
   String get shortElementName {
     if (elementName.length > 15) {
       return "${elementName.substring(0, 15)}...";
@@ -103,14 +125,41 @@ class ElementViewModel extends ParentElementViewModel with ChangeNotifier {
   String get elementName {
     return _element.name;
   }
-  String get elementContent {
-    return _element.content;
-  }
   String get elementType {
     return _element.type;
   }
+  String get elementFileExtension {
+    var index = elementName.lastIndexOf(".");
+    if (index != -1 && index+1 < elementName.length) {
+      return elementName.substring(index+1);
+    } else {
+      return "";
+    }
+  }
+
+  String get elementContent {
+    return _element.content;
+  }
   bool get isExpandable {
     return elementType == ProjectElement.typeFolder;
+  }
+  String get state {
+    return isGitModified ? "modified" : "up-to-date";
+  }
+  int get lineNumber {
+    return 1;
+  }
+  int get columnNumber {
+    return 1;
+  }
+
+  String get fileTypeName {
+    String extension = elementFileExtension;
+    if (extension == "md") {
+      return "Markdown";
+    } else {
+      return "Text";
+    }
   }
 
   set elementContent(String value) {

@@ -57,6 +57,10 @@ class ProjectViewModel extends ParentElementViewModel with ChangeNotifier {
     return _project;
   }
 
+  ProjectType get projectType {
+    return _project.type;
+  }
+
   @override
   ProjectViewModel get projectViewModel {
     return this;
@@ -68,6 +72,18 @@ class ProjectViewModel extends ParentElementViewModel with ChangeNotifier {
 
   List<ElementViewModel> get elements {
     return _projectElements;
+  }
+
+  List<ElementViewModel> get allFileElements {
+    List<ElementViewModel> elts = [];
+    for (var elt in elements) {
+      if (elt.elementType == ProjectElement.typeFolder) {
+        elts.addAll(elt.allFileElements);
+      } else {
+        elts.add(elt);
+      }
+    }
+    return elts;
   }
 
   ElementViewModel? get builtElement {

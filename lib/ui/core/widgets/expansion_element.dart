@@ -102,7 +102,6 @@ class _ExpansionElement extends State<ExpansionElement> {
       child: widget._title,
       onTap: () {
         final onClick = widget._onClick;
-        print("OnTap");
         if ((widget._expanded == null || widget._expanded == false) && onClick != null) {
           onClick();
         }

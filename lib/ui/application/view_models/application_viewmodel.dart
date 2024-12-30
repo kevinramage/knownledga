@@ -47,6 +47,9 @@ class ApplicationViewModel with ChangeNotifier {
 
   Future<void> push(ProjectViewModel projectViewModel) async {
     await _api.project.push(projectViewModel.project);
+    for (var elt in projectViewModel.allFileElements) {
+      elt.pushContent();
+    }
   }
 
   String getHomeDirectory() {

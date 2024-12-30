@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:knownledga/ui/content/view_models/editor_viewmodel.dart';
 import 'package:knownledga/ui/content/widgets/editorfile_screen.dart';
+import 'package:knownledga/ui/content/widgets/editorstate_screen.dart';
 import 'package:knownledga/ui/content/widgets/filename_screen.dart';
 import 'package:knownledga/data/repositories/explorer/project_element.dart';
 
@@ -32,7 +33,8 @@ class _ContentEditorScreen extends State<ContentEditorScreen> {
       color: Colors.grey.shade600,
       child: Column(children: [
         FileNameScreen(editorViewModel: viewModel),
-        EditorFileScreen(editorViewModel: viewModel)
+        EditorFileScreen(editorViewModel: viewModel),
+        EditorStateScreen(editorViewModel: viewModel)
       ])
     ));
   }
