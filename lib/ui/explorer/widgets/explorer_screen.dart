@@ -23,16 +23,6 @@ class _ExplorerScreen extends State<ExplorerScreen> {
   @override
   void initState() {
     super.initState();
-    _init();
-  }
-
-  _init() {
-    final instance = KnownledgaConfiguration.instance;
-    if (instance != null) {
-      widget._modelView.loadProjects();
-    } else {
-      Future.delayed(const Duration(milliseconds: 100), () { _init(); });
-    }
   }
 
   @override

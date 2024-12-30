@@ -1,11 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:knownledga/data/repositories/core/configuration.dart';
 import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/data/repositories/core/log.dart';
 import 'package:knownledga/data/services/base/application_api.dart';
 import 'package:knownledga/data/services/helper/window_helper.dart';
+import 'package:path/path.dart' as path;
 
 class WindowsApplicationApi extends BaseApplicationApi {
 
@@ -16,8 +16,15 @@ class WindowsApplicationApi extends BaseApplicationApi {
     log.addExceptionLog(LogComponent.project, exception, stackTrace);
   }
 
+  _init() async {
+    String homeDirectory = WindowsHelper.getHomeDirectory();
+    String knownledgaDirectory = path.join(homeDirectory, ".knownledga", "projects");
+    await Directory(knownledgaDirectory).create(recursive: true);
+  }
+
   @override
   Future<KnownledgaConfiguration> loadConfiguration() async {
+    await _init();
     _logInfo("Load configuration");
     try {
       String path =  WindowsHelper.getKnownledgaConfigurationPath();

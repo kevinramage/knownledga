@@ -8,10 +8,12 @@ import 'package:knownledga/ui/explorer/widgets/explorer_screen.dart';
 class ApplicationScreen extends StatefulWidget {
 
   final ApplicationViewModel _viewModel;
+  final ExplorerViewModel _explorerViewModel;
   final ContentViewModel _contentViewModel;
   
   ApplicationScreen({super.key, required ApplicationViewModel viewModel}) :
     _viewModel = viewModel,
+    _explorerViewModel = ExplorerViewModel(application: viewModel),
     _contentViewModel = ContentViewModel(applicationViewModel: viewModel) {
     viewModel.contentViewModel = _contentViewModel;
   }
@@ -26,7 +28,14 @@ class _ApplicationScreen extends State<ApplicationScreen> {
 
   @override
   void initState() {
-    widget._viewModel.loadConfiguration();
+
+    // Initialize and load configuration
+    widget._viewModel.loadConfiguration().then((_) {
+      // Load projects
+      widget._explorerViewModel.loadProjects();
+
+    });
+    
     super.initState();
   }
 
@@ -34,7 +43,7 @@ class _ApplicationScreen extends State<ApplicationScreen> {
   Widget build(BuildContext context) {
     return ListenableBuilder(listenable: widget._viewModel, builder: (context, child) {
       return Row(children: [
-        ExplorerScreen(explorer: ExplorerViewModel(application: widget._viewModel)),
+        ExplorerScreen(explorer: widget._explorerViewModel),
         ContentScreen(contentViewModel: widget._contentViewModel)
       ]);
     });

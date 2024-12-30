@@ -219,7 +219,9 @@ class WindowsProjectApi extends BaseProjectApi {
           _logInfo("${projects.length} projects loaded");
           //sortElements(projects);
           _updateProjectsType(projects);
-          completer.complete(projects);
+          if (!completer.isCompleted) {
+            completer.complete(projects);
+          }
         }
       );
 
