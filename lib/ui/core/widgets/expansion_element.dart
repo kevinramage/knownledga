@@ -8,6 +8,7 @@ class ExpansionElement extends StatefulWidget {
   final List<Widget>? _children;
   final bool? _expanded;
   final bool? _isExpandable;
+  final Function? _onClick;
 
   const ExpansionElement({
     super.key,
@@ -16,13 +17,15 @@ class ExpansionElement extends StatefulWidget {
     List<Widget>? children,
     List<Widget>? commands,
     bool? expanded,
-    bool? isExpandable
+    bool? isExpandable,
+    Function? onClick,
   }) : _title = title, 
       _leading = leading, 
       _children = children,
       _commands = commands,
       _expanded = expanded,
-      _isExpandable = isExpandable;
+      _isExpandable = isExpandable,
+      _onClick = onClick;
 
   @override
   State<StatefulWidget> createState() {
@@ -78,7 +81,11 @@ class _ExpansionElement extends State<ExpansionElement> {
     if (widget._leading != null) {
       widgets.add(Padding(padding: const EdgeInsets.only(right: 15), child: widget._leading));
     }
-    widgets.add(widget._title);
+    if (widget._onClick != null && (widget._isExpandable == null || widget._isExpandable == false)) {
+      widgets.add(_buildExpansionClickableTitle());
+    } else {
+      widgets.add(widget._title);
+    }
     widgets.add(const Expanded(child: Text("")));
     if (widget._commands != null) {
       widgets.addAll(widget._commands as List<Widget>);
@@ -88,6 +95,19 @@ class _ExpansionElement extends State<ExpansionElement> {
     }
 
     return Row(children: widgets);
+  }
+
+  Widget _buildExpansionClickableTitle() {
+    return GestureDetector(
+      child: widget._title,
+      onTap: () {
+        final onClick = widget._onClick;
+        print("OnTap");
+        if ((widget._expanded == null || widget._expanded == false) && onClick != null) {
+          onClick();
+        }
+      },
+    );
   }
 
   Widget _buildExpansionIcon() {

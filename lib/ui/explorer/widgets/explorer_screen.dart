@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:knownledga/data/repositories/core/configuration.dart';
 import 'package:knownledga/data/repositories/core/exception.dart';
 import 'package:knownledga/ui/dialog/widgets/create_project_screen.dart';
 import 'package:knownledga/ui/dialog/widgets/error_viewer_screen.dart';

@@ -41,6 +41,7 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
         leading: _buildElementIcon(elt),
         title: _buildTitleElement(context, elt),
         isExpandable: elt.isExpandable,
+        onClick: () { _openElement(context, elt); },
         commands: _buildElementCommands(context, elt),
         children: [ _buildChidrenElements(context, elt) ]
       );
@@ -156,6 +157,19 @@ class _ElementExplorerScreen extends State<ElementExplorerScreen> {
     );
   }
 
+   void _openElement(BuildContext context, ElementViewModel elt) {
+    if (elt.elementType == ProjectElement.typeFile) {
+      elt.openElement().then((_) {
+
+      }).catchError((e) {
+        if (context.mounted) {
+          DialogErrorViewerScreen().show(context, e);
+        } else {
+          throw Exception("Impossible to display error, invalid context");
+        }
+      });
+    }
+  }
 
   ElementViewModel get elementViewModel {
     return widget._viewModel;
