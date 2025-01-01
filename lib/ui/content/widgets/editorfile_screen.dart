@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:knownledga/ui/content/view_models/editor_viewmodel.dart';
+import 'package:knownledga/ui/content/widgets/markdown/markdown_render_screen.dart';
 import 'package:knownledga/ui/explorer/view_models/element_viewmodel.dart';
 
 class EditorFileScreen extends StatefulWidget {
@@ -52,7 +53,7 @@ class _EditorFileScreen extends State<EditorFileScreen> {
         shortcuts: _buildShortcuts(),
         child: Actions(
           actions: _buildActions(),
-          child: _buildTextField()
+          child: _buildEditorView()
         )
       ));
     } else {
@@ -74,6 +75,23 @@ class _EditorFileScreen extends State<EditorFileScreen> {
         return null;
       })
     };
+  }
+
+  Widget _buildEditorView() {
+    /*
+    if (widget._editorViewModel.viewIndex == 1) {
+      return MarkdownDesignerScreen(editorViewModel: widget._editorViewModel);
+    } else if (widget._editorViewModel.viewIndex == 2) {
+      return MarkdownRendererScreen(editorViewModel: widget._editorViewModel);
+    } else {
+      return _buildTextField();
+    }
+    */
+    if (widget._editorViewModel.viewIndex == 1) {
+      return MarkdownRendererScreen(editorViewModel: widget._editorViewModel);
+    } else {
+      return _buildTextField();
+    }
   }
 
   Widget _buildTextField() {

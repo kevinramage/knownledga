@@ -42,6 +42,8 @@ class _EditorStateScreen extends State<EditorStateScreen> {
         Padding(padding: const EdgeInsets.only(right: 10), child: Text(model.state, style: const TextStyle(fontSize: 14, color: Colors.white))),
         Text("Ln ${model.lineNumber}, Col ${model.columnNumber}", style: const TextStyle(fontSize: 14, color: Colors.white)),
         const Expanded(child: Text("")),
+        Text("Mode: ${widget._editorViewModel.viewMode}", style: const TextStyle(fontSize: 14, color: Colors.white)),
+        const Expanded(child: Text("")),
         const Padding(padding: EdgeInsets.only(right: 10), child: Text("UTF-8", style: TextStyle(fontSize: 14, color: Colors.white))),
         const Padding(padding: EdgeInsets.only(right: 10), child: Text("CRLF", style: TextStyle(fontSize: 14, color: Colors.white))),
         Padding(padding: const EdgeInsets.only(right: 10), child: Text(model.fileTypeName, style: const TextStyle(fontSize: 14, color: Colors.white)))
