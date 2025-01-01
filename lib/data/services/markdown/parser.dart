@@ -1,11 +1,16 @@
 import 'package:knownledga/data/repositories/markdown/blockquote.dart';
+import 'package:knownledga/data/repositories/markdown/bold.dart';
 import 'package:knownledga/data/repositories/markdown/checklist.dart';
 import 'package:knownledga/data/repositories/markdown/fence.dart';
 import 'package:knownledga/data/repositories/markdown/heading.dart';
+import 'package:knownledga/data/repositories/markdown/italic.dart';
 import 'package:knownledga/data/repositories/markdown/linebreak.dart';
+import 'package:knownledga/data/repositories/markdown/link.dart';
 import 'package:knownledga/data/repositories/markdown/orderedlist.dart';
 import 'package:knownledga/data/repositories/markdown/paragraph.dart';
+import 'package:knownledga/data/repositories/markdown/strike.dart';
 import 'package:knownledga/data/repositories/markdown/table.dart';
+import 'package:knownledga/data/repositories/markdown/text.dart';
 import 'package:knownledga/data/repositories/markdown/token.dart';
 import 'package:knownledga/data/repositories/markdown/unorderedList.dart';
 
@@ -76,6 +81,49 @@ class MarkdownParser {
     return tokens;
   }
 
+  List<MarkdownToken> _parseInline(String content) {
+    List<MarkdownToken> tokens = [];
+    String text = content.replaceAll("\r", "");
+    while (text.isNotEmpty) {
+      
+      // Link
+      if (_isLinkExpression(text)) {
+        var token = _generateLinkToken(text);
+        text = text.substring(token.raw.length);
+        tokens.add(token);
+
+      // Bold
+      } else if (_isBoldExpression(text)) {
+        var token = _generateBoldToken(text);
+        text = text.substring(token.raw.length);
+        tokens.add(token);
+      
+      // Italic
+      } else if (_isItalicExpression(text)) {
+        var token = _generateItalicToken(text);
+        text = text.substring(token.raw.length);
+        tokens.add(token);
+
+      // Strike
+      } else if (_isStrikeExpression(text)) {
+        var token = _generateStrikeToken(text);
+        text = text.substring(token.raw.length);
+        tokens.add(token);
+
+      // Text
+      } else if (_isTextExpression(text)) {
+        var token = _generateTextToken(text);
+        text = text.substring(token.raw.length);
+        tokens.add(token);
+      
+      } else {
+        throw Exception("MarkdownParser.parseInline - Invalid inline token");
+      }
+    }
+
+    return tokens; 
+  }
+
   _isHeadingExpression(String text) {
     return regexHeading.hasMatch(text);
   }
@@ -112,6 +160,26 @@ class MarkdownParser {
     return regexTable.hasMatch(text);
   }
 
+  _isLinkExpression(String text) {
+    return regexLink.hasMatch(text);
+  }
+
+  _isBoldExpression(String text) {
+    return regexBold.hasMatch(text);
+  }
+
+  _isItalicExpression(String text) {
+    return regexItalic.hasMatch(text);
+  }
+
+  _isStrikeExpression(String text) {
+    return regexStrike.hasMatch(text);
+  }
+
+  _isTextExpression(String text) {
+    return regexText.hasMatch(text);
+  }
+
   _generateHeadingToken(String text) {
     var matches = regexHeading.firstMatch(text);
     if (matches != null) {
@@ -129,7 +197,8 @@ class MarkdownParser {
     if (matches.isNotEmpty) {
       String raw = matches.first.group(0).toString();
       String content = matches.first.group(1).toString();
-      return MarkdownParagraphToken(type: MarkdownTokenType.paragraph, raw: raw, text: content);
+      List<MarkdownToken> tokens = _parseInline(content);
+      return MarkdownParagraphToken(type: MarkdownTokenType.paragraph, raw: raw, tokens: tokens);
     } else {
       return null;
     }
@@ -238,5 +307,63 @@ class MarkdownParser {
     List<String> cellsList = lineContent.trim().split("|").map((c) => c.trim()).where((c) => c.isNotEmpty).toList();
     List<MarkdownTableCell> cells = cellsList.map((c) => MarkdownTableCell(content: c)).toList();
     return MarkdownTableLine(cells: cells);
+  }
+
+  _generateLinkToken(String text) {
+    var matches = regexLink.firstMatch(text);
+    if (matches != null) {
+      String raw = matches.group(0).toString();
+      String title = matches.group(1).toString();
+      String link = matches.group(2).toString();
+      return MarkdownLink(type: MarkdownTokenType.link, raw: raw, title: title, link: link);
+    } else {
+      return null;
+    }
+  }
+
+  _generateBoldToken(String text) {
+    var matches = regexBold.firstMatch(text);
+    if (matches != null) {
+      String raw = matches.group(0).toString();
+      String tokenContent = matches.group(1).toString();
+      List<MarkdownToken> tokens = _parseInline(tokenContent);
+      return MarkdownBold(type: MarkdownTokenType.bold, raw: raw, tokens: tokens);
+    } else {
+      return null;
+    }
+  }
+
+  _generateItalicToken(String text) {
+    var matches = regexItalic.firstMatch(text);
+    if (matches != null) {
+      String raw = matches.group(0).toString();
+      String tokenContent = matches.group(1).toString();
+      List<MarkdownToken> tokens = _parseInline(tokenContent);
+      return MarkdownItalic(type: MarkdownTokenType.italic, raw: raw, tokens: tokens);
+    } else {
+      return null;
+    }
+  }
+
+  _generateStrikeToken(String text) {
+    var matches = regexStrike.firstMatch(text);
+    if (matches != null) {
+      String raw = matches.group(0).toString();
+      String tokenContent = matches.group(2).toString();
+      List<MarkdownToken> tokens = _parseInline(tokenContent);
+      return MarkdownStrike(type: MarkdownTokenType.strike, raw: raw, tokens: tokens);
+    } else {
+      return null;
+    }
+  }
+
+  _generateTextToken(String text) {
+    var matches = regexText.firstMatch(text);
+    if (matches != null) {
+      String raw = matches.group(0).toString();
+      return MarkdownText(type: MarkdownTokenType.text, raw: raw, text: raw.trim());
+    } else {
+      return null;
+    }
   }
 }
