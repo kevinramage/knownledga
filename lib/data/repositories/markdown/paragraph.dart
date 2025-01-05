@@ -3,7 +3,7 @@ import 'package:knownledga/data/repositories/markdown/token.dart';
 // Example
 // This is a paragraph
 class MarkdownParagraphToken extends MarkdownToken {
-  String text;
+  List<MarkdownToken> tokens;
 
-  MarkdownParagraphToken({required super.type, required this.text, required super.raw});
+  MarkdownParagraphToken({required super.type, required this.tokens, required super.raw});
 }

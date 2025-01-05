@@ -42,7 +42,7 @@ class _EditorToolbarScreen extends State<EditorToolbarScreen> {
       List<bool> isSelected = [false, false];
       isSelected[model.viewIndex] = true;
       return Container(height: 50, color: Colors.grey.shade600, child: Row(children: [
-        const Expanded(child: const Text("")),
+        const Expanded(child: Text("")),
         ToggleButtons(
           isSelected: isSelected,
           constraints: const BoxConstraints(maxHeight: 30),

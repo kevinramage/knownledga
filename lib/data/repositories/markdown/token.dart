@@ -5,7 +5,7 @@ abstract class MarkdownToken {
   MarkdownToken({required this.type, required this.raw});
 }
 
-enum MarkdownTokenType { heading, paragraph, unorderedList, orderedList, checklist, fence, lineBreak, blockQuote, table}
+enum MarkdownTokenType { heading, paragraph, unorderedList, orderedList, checklist, fence, lineBreak, blockQuote, table, link, text, bold, strike, italic}
 
 /// BLOCK
 var regexHeading = RegExp(r'^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)');
