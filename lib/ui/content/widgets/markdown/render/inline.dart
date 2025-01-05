@@ -27,7 +27,7 @@ class MarkdownInlineScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: _tokens.map((t) => _buildToken(t)).toList());
+    return Row(children: _tokens.map((t) => _buildToken(t)).toList());
   }
 
   Widget _buildToken(MarkdownToken token) {
